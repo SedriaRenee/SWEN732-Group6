@@ -1,0 +1,20 @@
+generator py {
+  provider                    = "prisma-client-py"
+  recursive_type_depth        = "5"
+  enable_experimental_decimal = "true"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model location {
+  id       Int        @id @default(autoincrement())
+  name     String     @db.VarChar(255)
+  lat      String     @db.VarChar(15)
+  lon      String     @db.VarChar(15)
+  parentId Int?
+  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id])
+  children location[] @relation("LocationToLocation")
+}

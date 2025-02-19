@@ -1,0 +1,1 @@
+Location data obtained from [text](https://simplemaps.com/data/world-cities.)
