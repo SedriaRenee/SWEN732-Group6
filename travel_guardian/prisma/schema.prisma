@@ -8,11 +8,12 @@ datasource db {
 }
 
 model location {
-  id             Int        @id @default(autoincrement())
-  name           String     @db.VarChar(255)
-  lat            String     @db.VarChar(15)
-  lon            String     @db.VarChar(15)
-  parentId         Int?
-  parent location?  @relation("LocationToLocation", fields: [parentId], references: [id])
-  children  location[] @relation("LocationToLocation")
+  id       Int        @id @default(autoincrement())
+  name     String     @db.VarChar(255)
+  lat      String     @db.VarChar(15)
+  lon      String     @db.VarChar(15)
+  type     String     @db.VarChar(15)
+  parentId Int?
+  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id])
+  children location[] @relation("LocationToLocation")
 }

@@ -16,8 +16,7 @@
 
 ## Executive Summary
 
-This is a summary of the project.
-
+Travel Guardian aims to educate and protect travelers by aggregating government and tourism travel guidelines with real experiences from other tourists and locals for every destination in the world. Users will begin by selecting a location within the webapp. Next, the user can view up-to-date travel guidelines, such as visa or vaccine requirements. They can also view reports from other users that discuss recent events from that location, as well as post their own questions. 
 
 ## Requirements
 
@@ -40,5 +39,13 @@ This section describes the application architecture.
 
 
 ### Use Cases
-> _Place a use case diagram here._
-> _Describe your use case diagram._
+##### Viewing Guidelines (8)
+![Viewing Guidelines](/images/ViewingGuidelines.png "Viewing Guidelines")
+##### Reporting Incidents (5)
+![Reporting Incidents](/images/ReportingIncidents.png "Reporting Incidents")
+##### Gathering Guidelines (8)
+![Gathering Guidelines](/images/GatheringGuidelines.png "Gathering Guidelines")
+##### Filtering Guidelines (3)
+![Filtering Guidelines](/images/FilteringGuidelines.png "Filtering Guidelines")
+##### Guideline Updates (3)
+![Guideline Updates](/images/GuidelineUpdates.png "Guideline Updates")

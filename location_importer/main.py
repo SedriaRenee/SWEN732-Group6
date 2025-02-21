@@ -15,10 +15,8 @@ def read_csv(file_path):
     return header, data
 
 
-async def create_location(name, lat="", lon="", parent=None):
-    location = await db.location.create(data={"name": name, "lat": lat, "lon": lon, "parentId": parent})
-    
-    #print("Created location:", location)
+async def create_location(name, lat="", lon="", parent=None, type="city"):
+    location = await db.location.create(data={"name": name, "lat": lat, "lon": lon, "parentId": parent, "type": type})
     return location.id
 
 countries = {}
@@ -38,14 +36,14 @@ async def main():
         lon = str(row[3])
         country = row[4]
         if country not in countries:
-            parent = await create_location(country)
+            parent = await create_location(country, "", "", parent=None, type="country")
             countries[country] = parent
             print("Created country:", country)
         else:
             parent = countries[country]
         parent_name = row[7]
         if parent_name not in states:
-            parent = await create_location(parent_name, "", "", parent=parent)
+            parent = await create_location(parent_name, "", "", parent=parent, type="state")
             states[parent_name] = parent
             print("Created state:", parent_name, " in ", country)
         else:
