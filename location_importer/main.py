@@ -1,10 +1,7 @@
 import csv
 import asyncio
 from prisma import Prisma
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
 db = Prisma()
 
 def read_csv(file_path):
@@ -13,7 +10,6 @@ def read_csv(file_path):
         header = next(csv_reader)
         data = [row for row in csv_reader]
     return header, data
-
 
 async def create_location(name, lat="", lon="", parent=None, type="city"):
     location = await db.location.create(data={"name": name, "lat": lat, "lon": lon, "parentId": parent, "type": type})
