@@ -45,58 +45,58 @@ As a traveler, I want to check all national, regional, and local travel guidelin
 As a traveler, I want to report incidents that happen while traveling, so I can inform others about dangers and help them travel safely.
 
    a. Users can submit incident reports including location, description, and relevant tags.
-   b.Users can modify reports to add more details.
+   b. Users can modify reports to add more details.
    c. Users can remove their reports if necessary.
    d. Travelers can view all incident reports for a destination based on location.
    
-3. Gathering Travel Guidelines
+4. Gathering Travel Guidelines
 As a traveler, I want all travel guidelines for my destinations to be aggregated and analyzed from official government sources frequently, so my travel information remains up to date.
 
    a. Travel guideline data will be collected from official government and tourism websites.
    b. Data will be stored and structured for easy searching and retrieval.
    c. Data collection will respect rate limits and robots.txt policies.
    
-4. Filtering Travel Guidelines
+5. Filtering Travel Guidelines
 As a traveler, I want to filter travel guidelines based on my specific needs and concerns, so I can quickly find relevant information.
 
    a. Users can filter guidelines by health, visas, and safety-related information.
    b. Users can select guidelines for specific regions or encompassing areas.
    
-5. Guidelines Updates & Notifications
+6. Guidelines Updates & Notifications
 As a traveler, I want to receive notifications when travel guidelines are updated, so I can stay informed before my trip.
 
    a. Users can mark/unmark destinations for upcoming trips.
    b. Users can set common travel destinations to receive ongoing updates.
    c. Notifications will be sent when a marked destination receives new travel updates.
    
-6. Community Discussion Posts
+7. Community Discussion Posts
 As a traveler, I want to post questions to locals about my current, past, or upcoming trip.
 
    a. Users can create discussion posts under a specific city.
    b. Users can tag other travelers in discussions for responses.
    
-7. Emergency Alert System
+8. Emergency Alert System
 As a solo traveler, I want to share my location with selected contacts, so they know I’m safe and where I am.
 
    a. Users can share their real-time location with trusted contacts.
    b. Users can send direct alerts to selected contacts in case of an emergency.
    c. Selected contacts can view an up-to-date location of the traveler.
    
-8. Travel Companion Matching
+9. Travel Companion Matching
 As a solo traveler, I want to connect with others who may want to join my travels, so I can feel safer and share expenses.
 
    a. Users can create travel companion posts to find potential partners.
    b. Travelers can view posts, comment, and send direct messages to others.
    c. Users can set preferences for ideal travel companions (e.g., gender, interests, budget).
    
-9. User Profiles & Messaging
+10. User Profiles & Messaging
 As a user, I want to create a personal profile to connect with others on the platform.
 
    a. Users can set a profile picture and short bio (including name, age, location, social media, and places traveled).
    b. Users can choose to make their profile public or private for privacy control.
    c. A messaging system will allow travelers to connect and communicate.
    
-10. Travel Safety Heatmap & Advisory Map
+11. Travel Safety Heatmap & Advisory Map
 As a user, I want to quickly view a heatmap of the world to identify areas with high safety risks or travel advisories before booking my trip.
 
    a. A heatmap will display safety risks and travel advisories globally.
