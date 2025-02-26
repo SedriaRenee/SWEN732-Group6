@@ -141,9 +141,11 @@ As a traveler, I want to receive notifications when travel guidelines are update
 
 ##### Discussion Post (5)
 As a traveler I want to be able to leave a note to ask a local a question about my current, past, or upcoming trip.
+![Discussion Post](./images/DiscussionPost.png "Discussion Post")
 
 ##### Alert System (3)
 As a solo traveler, I want to share my location with others, so they can know I’m safe and where I am currently located.
+![Alert System](./images/AlertSystem.png "Alert System")
 
 ##### Travel Companion (3)
 As a solo traveler I want to be able to connect with others who may want to join my travels so that I can feel safer and save expenses that can be split.
