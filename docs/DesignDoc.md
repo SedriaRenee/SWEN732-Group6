@@ -109,8 +109,8 @@ As a user, I want to quickly view a heatmap of the world to identify areas with 
 This section describes the application architecture.
 
 ### Software Architecture
-> _Place a architectural diagram here._
-> _Describe your software architecture._
+We have chosen a Model-View-Controller (MVC) architecture to effectively manage our database and handle the logic required for retrieving up-to-date travel guidelines. For our model, we are using PostgreSQL to store and manage data. Prisma serves as our controller, handling API calls, facilitating database interactions,and handling logic of fetching these guilelines. For the view, we are using Next.js, as we are already familiar with it and have many packages and tools to help build our app.
+![System Architecture}(./images/block-digram.drawio.png "MVC Diagram")
 
 
 ### Use Cases
