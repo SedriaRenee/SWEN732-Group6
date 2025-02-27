@@ -1,11 +1,6 @@
 
 # PROJECT Design Documentation
 
-> _The following template provides the headings for your Design
-> Documentation.  As you edit each section make sure you remove these
-> commentary 'blockquotes'; the lines that start with a > character
-> and appear in the generated PDF in italics._
-
 ## Team Information
 * Team name: Group 6
 * Team members
@@ -111,7 +106,7 @@ This section describes the application architecture.
 ### Software Architecture
 We have chosen a Model-View-Controller (MVC) architecture to effectively manage our database and handle the logic required for retrieving up-to-date travel guidelines. For our model, we are using PostgreSQL to store and manage data. Prisma serves as our controller, handling API calls, facilitating database interactions,and handling logic of fetching these guilelines. For the view, we are using Next.js, as we are already familiar with it and have many packages and tools to help build our app.
 
-![System Architecture](./images/block-digram.drawio.png "MVC Diagram")
+![System Architecture](./images/block-dragram.drawio.png "MVC Diagram")
 
 
 ### Use Cases
