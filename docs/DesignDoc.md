@@ -145,12 +145,16 @@ As a solo traveler, I want to share my location with others, so they can know Iâ
 
 ##### Travel Companion (3)
 As a solo traveler I want to be able to connect with others who may want to join my travels so that I can feel safer and save expenses that can be split.
+![Travel Companion](./images/TravelCompanion.png "Travel Companion")
 
 ##### User Profile (5)
 As a user I want to have an all encompassing profile so that I can connect with other users on the platform.
+![User Profile](./images/UserProfile.png "User Profile")
 
 ##### Travel Advisory Map / Safety Spike (5)
 As a user I want to be able to quickly view a heat map of the world so I know which areas have a high safety risk or travel advisory before I book my trip.
+![Travel Advisory Map](./images/SafetyMap.png "Travel Advisory Map")
+
 
 
 
