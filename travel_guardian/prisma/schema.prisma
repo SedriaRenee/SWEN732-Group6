@@ -16,4 +16,14 @@ model location {
   parentId Int?
   parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id])
   children location[] @relation("LocationToLocation")
+  reports  report[]
+}
+
+model report {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(255)
+  desc    String    @db.Text()
+  created DateTime  @default(now())
+  locId   Int
+  loc     location? @relation(fields: [locId], references: [id])
 }

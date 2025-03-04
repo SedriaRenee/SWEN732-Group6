@@ -1,5 +1,7 @@
 'use client';
 
+import CreateReport from '@/components/CreateReport';
+import ListReports from '@/components/ListReports';
 import { FullLocation } from '@/model/location';
 import { useState, useEffect } from 'react';
 
@@ -8,6 +10,10 @@ export default function LocationClient({ location }: { location: FullLocation })
         <a href="/" className="text-blue-500 text-lg font-bold">Back</a>
         <div>
             <h1 className="text-white text-xl font-black"> {location.name} ({location.type}) </h1>
+            
+            <CreateReport locationId={location.id} />
+            <ListReports locationId={location.id} />
+            
             {location.parent && <h3> in <a className="text-blue-500 text-bold" href={`/location/${location.parent.id}`}>{location.parent.name}</a> </h3>}
             {location.children.length > 0 && <h3> Contains: </h3>}
             <ul className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 list-none px-5">
