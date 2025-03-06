@@ -1,11 +1,12 @@
-"use server";
-import { Prisma, PrismaClient } from '@prisma/client'
+'use server';
+import { PrismaClient } from '@prisma/client';
 
-let prismaClient: PrismaClient;
+let prismaClient: PrismaClient | undefined;
 
 export async function getPrisma() {
-   if (prismaClient) return prismaClient
-    
+  if (!prismaClient) {
     prismaClient = new PrismaClient();
-    return prismaClient;
+  }
+
+  return prismaClient;
 }

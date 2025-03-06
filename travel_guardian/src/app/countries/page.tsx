@@ -1,16 +1,11 @@
-import { getCountries, getLocation } from "@/model/location";
-import LocationClient from "../location/[id]/LocationClient";
+import { getCountries } from "@/model/location";
 
 export default async function Countries() {
   const locations = await getCountries();
-  const countries = locations.sort((a, b) => a.name.localeCompare(b.name));
+  const countries = locations.toSorted((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div>
-      <a href="/" className="text-blue text-bold">
-        Back to Search
-      </a>
-
       <h1 className="text-white text-xl font-black"> Countries </h1>
 
       <ul className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 list-none px-5">

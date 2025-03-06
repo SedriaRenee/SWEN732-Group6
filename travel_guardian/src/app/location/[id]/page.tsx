@@ -1,5 +1,5 @@
 import { getLocation } from '@/model/location';
-import LocationClient from './LocationClient';
+import LocationPage from '../../../components/LocationPage';
 
 export default async function Location({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -8,11 +8,9 @@ export default async function Location({ params }: { params: Promise<{ id: strin
   const location = await getLocation(parseInt(locId) ?? -1);
 
   if (location) {
-    const newChildren = location.children.sort((a, b) => a.name.localeCompare(b.name));
-    return <LocationClient location={{...location, children: newChildren}} />;
+    return <LocationPage location={location} />;
   } else {
-    <div className="flex flex-col gap-4 items-center">
-      <a href="/" className="text-blue text-bold">Back to Search</a>
+    return <div className="flex flex-col gap-4 items-center">
       <h1 className="text-red text-bold">Location not found</h1>  
     </div>;
   }

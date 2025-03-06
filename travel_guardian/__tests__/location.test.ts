@@ -21,7 +21,7 @@ test("Find New York City", async () => {
     const loc = await searchLocation(ny);
     
     let found = false;
-    for (let l of loc) {
+    for (const l of loc) {
         if (l.name == ny && l.type == "city") {
             found = true;
             break;

@@ -18,6 +18,7 @@ export async function getCountries(): Promise<location[]> {
     return client.location.findMany({ where: { type: "country" } });
 }
 
+// Location model that includes only the immediate parent name, and basic location info. Used for searching
 export type LocationResult = {
     id: number;
     name: string;
@@ -25,6 +26,7 @@ export type LocationResult = {
     parentName: string;
 }
 
+// Location model that includes the immediate parent and ALL children
 export type FullLocation = Prisma.locationGetPayload<{
     include: {
         parent: true;
