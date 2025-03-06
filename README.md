@@ -5,12 +5,12 @@ Contains the frontend and backend for the Travel Guardian web app,
 with styling through Tailwind and database through Prisma.
 
 Folder Layout:
-`/app` - Pages (views)
-`/components` - Reusable view elements
-`/lib` - Libraries, currently handles Prisma
-`/model` - Data modeling (through Prisma or custom) and querying
-`/public` - Images and icons for site
-`/__tests__` - Unit tests
+- `/app` - Pages (views)
+- `/components` - Reusable view elements
+- `/lib` - Libraries, currently handles Prisma
+- `/model` - Data modeling (through Prisma or custom) and querying
+- `/public` - Images and icons for site
+- `/__tests__` - Unit tests
 
 #### Setup
 Prerequisite: Install postgres database
