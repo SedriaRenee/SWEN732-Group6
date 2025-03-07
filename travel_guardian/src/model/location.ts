@@ -33,3 +33,8 @@ export type FullLocation = Prisma.locationGetPayload<{
         children: true;
     };
 }>;
+
+// Function for comparing location names 
+export function normalizeLocation(name: string): string {
+    return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}

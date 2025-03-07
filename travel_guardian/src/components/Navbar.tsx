@@ -1,7 +1,7 @@
 'use client';
 import { LocationResult, searchLocation } from '@/model/location';
 import Link from 'next/link';
-import { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 
 export default function Navbar() {
   const [name, setName] = useState('');
@@ -20,7 +20,7 @@ export default function Navbar() {
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  });
+  }, [locations]);
 
   async function search(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,7 +43,7 @@ export default function Navbar() {
         </h5>
         {locations.map((loc) => {
           return (
-            <div key={loc.id} className="flex flex-col gap-2">
+            <div key={loc.id} className="flex flex-col gap-2" data-testid="location">
               <a
                 className="text-blue-300 text-bold py-1"
                 href={`/location/${loc.id}`}
@@ -86,6 +86,7 @@ export default function Navbar() {
         >
           {searchResult}
           <input
+            data-testid="search"
             type="text"
             placeholder="Location..."
             value={name}
