@@ -27,8 +27,7 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'  # Set your desired Node.js version
-          cache: 'npm'
+          node-version: '20.x' 
 
       # Set DATABASE_URL for Prisma
       - name: Set DATABASE_URL in environment
