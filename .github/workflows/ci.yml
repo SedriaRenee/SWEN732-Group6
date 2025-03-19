@@ -30,6 +30,11 @@ jobs:
       with:
           postgresql-version: '17' 
           postgresql-db: 'travel_guardian_db'
+          postgresql-user: 'postgres'
+          postgresql-password: 'password'
+    - name: Set DATABASE_URL in environment
+      run: |
+          echo "DATABASE_URL=postgresql://postgres:password@localhost:5432/travel_guardian_db?schema=public" >> $GITHUB_ENV
       
     - name: Install dependencies
       run: npm install
