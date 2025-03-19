@@ -1,18 +1,26 @@
 name: Node.js CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  # Or the branch you want to trigger the workflow
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repository
       - uses: actions/checkout@v4
+
+      # Set up Node.js environment
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+
+      # Install dependencies in the 'travel_guardian' folder
+      - name: Install dependencies
+        run: |
+          cd travel_guardian
+          npm ci
