@@ -1,7 +1,7 @@
 generator py {
   provider                    = "prisma-client-py"
-  recursive_type_depth        = "5"
   enable_experimental_decimal = "true"
+  recursive_type_depth        = "5"
 }
 
 datasource db {
@@ -16,6 +16,18 @@ model location {
   lon      String     @db.VarChar(15)
   type     String     @db.VarChar(15)
   parentId Int?
-  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id])
+  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children location[] @relation("LocationToLocation")
+  report   report[]
+
+  @@index([parentId], map: "fki_location_parentId_fkey")
+}
+
+model report {
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(255)
+  desc     String
+  created  DateTime @default(now())
+  locId    Int
+  location location @relation(fields: [locId], references: [id])
 }
