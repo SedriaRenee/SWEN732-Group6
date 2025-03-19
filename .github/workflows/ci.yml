@@ -17,7 +17,16 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
-  
+      
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: travel_guardian_db
+        ports:
+          - 5432:5432
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -25,13 +34,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Set up PostgreSQL
-      uses: shivammathur/setup-postgresql@v1
-      with:
-          postgresql-version: '17' 
-          postgresql-db: 'travel_guardian_db'
-          postgresql-user: 'postgres'
-          postgresql-password: 'password'
     - name: Set DATABASE_URL in environment
       run: |
           echo "DATABASE_URL=postgresql://postgres:password@localhost:5432/travel_guardian_db?schema=public" >> $GITHUB_ENV
