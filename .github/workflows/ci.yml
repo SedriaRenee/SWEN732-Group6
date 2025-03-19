@@ -37,7 +37,7 @@ jobs:
         echo "DATABASE_URL=postgresql://postgres:password@localhost:5432/travel_guardian_db?schema=public" >> $GITHUB_ENV
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
       working-directory: travel_guardian
 
     - name: Run Prisma DB Pull and Generate
@@ -63,7 +63,7 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
       working-directory: travel_guardian
 
     - name: Run Tests
