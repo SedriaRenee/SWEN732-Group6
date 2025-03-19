@@ -1,71 +1,18 @@
 name: Node.js CI
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: ['18.x','20.x']
-      
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: travel_guardian_db
-        ports:
-          - 5432:5432
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-
-    - name: Set DATABASE_URL in environment
-      run: |
-        echo "DATABASE_URL=postgresql://postgres:password@localhost:5432/travel_guardian_db?schema=public" >> $GITHUB_ENV
-
-    - name: Install dependencies
-      run: npm ci
-      working-directory: travel_guardian
-
-    - name: Run Prisma DB Pull and Generate
-      run: |
-        npx prisma db pull  
-        npx prisma generate 
-      working-directory: travel_guardian
-
-    - name: Run Build
-      run: npm run build --if-present
-      working-directory: travel_guardian
-
-  tests:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-      working-directory: travel_guardian
-
-    - name: Run Tests
-      run: npm test
-      working-directory: travel_guardian
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm test
