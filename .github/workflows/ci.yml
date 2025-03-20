@@ -32,7 +32,7 @@ jobs:
       # Set DATABASE_URL for Prisma
       - name: Set DATABASE_URL in environment
         run: |
-          echo "DATABASE_URL=postgresql://dev:%3EyU2%24Fd%5Exds38xa@tgdb.postgres.database.azure.com:5432/travelguardian?schema=public" >> $GITHUB_ENV
+          echo "DATABASE_URL=${{ secrets.SECRET_POSTGRES }}" >> $GITHUB_ENV
 
       # Install dependencies in the 'travel_guardian' directory
       - name: Install dependencies
