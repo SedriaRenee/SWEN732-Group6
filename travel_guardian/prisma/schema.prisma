@@ -29,3 +29,18 @@ model report {
   locId   Int
   loc     location @relation(fields: [locId], references: [id])
 }
+
+model users {
+ id  Int @id @default(autoincrement())
+  username String @db.VarChar(255)
+  email String @db.VarChar(255)
+  type  user_type
+  password String @db.VarChar(255)
+  first_name String @db.VarChar(400)
+  last_name String @db.VarChar(400)
+}
+
+enum user_type{
+  travler
+  local
+}
