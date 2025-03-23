@@ -28,7 +28,7 @@ export async function updateReply(replyId: number, content: string){
     const client = await getPrisma();
     return client.reply.update({
         where: { id: replyId },
-        data: { content },
+        data: { content:content },
     });
 }
 
