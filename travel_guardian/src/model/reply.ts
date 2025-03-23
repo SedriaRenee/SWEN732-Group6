@@ -15,10 +15,10 @@ export async function createReply(creatorId: number, discussionId: number, conte
     const client = await getPrisma();
     return client.reply.create({
         data: {
-            content,
-            creatorId,
-            discussionId,
-            parentId,
+            content:content,
+            creatorId: creatorId,
+             discussionId:discussionId,
+             parentId: parentId,
         },
     });
 }
