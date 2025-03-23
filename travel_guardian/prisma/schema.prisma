@@ -31,16 +31,40 @@ model report {
 }
 
 model users {
- id  Int @id @default(autoincrement())
-  username String @db.VarChar(255)
-  email String @db.VarChar(255)
-  type  user_type
-  password String @db.VarChar(255)
-  first_name String @db.VarChar(400)
-  last_name String @db.VarChar(400)
+  id          Int           @id @default(autoincrement())
+  username    String        @db.VarChar(255)
+  email       String        @db.VarChar(255)
+  type        user_type
+  password    String        @db.VarChar(255)
+  first_name  String        @db.VarChar(400)
+  last_name   String        @db.VarChar(400)
+  discussions discussions[]
+  reply       reply[]
 }
 
-enum user_type{
+model discussions {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  creatorId  Int
+  creator    users    @relation(fields: [creatorId], references: [id])
+  reply      reply[]
+}
+
+model reply {
+  id           Int          @id @default(autoincrement())
+  content      String       @db.VarChar(400)
+  created_at   DateTime     @default(now())
+  creatorId    Int
+  discussionId Int?
+  parentId     Int?
+  creator      users        @relation(fields: [creatorId], references: [id])
+  discussion   discussions? @relation(fields: [discussionId], references: [id])
+  parent       reply?       @relation("PostParent", fields: [parentId], references: [id])
+  children     reply[]      @relation("PostParent")
+}
+
+enum user_type {
   travler
   local
 }
