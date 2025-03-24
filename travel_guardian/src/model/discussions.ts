@@ -1,6 +1,5 @@
 "use server";
 import { getPrisma } from "@/lib/db";
-import {discussions, report} from "@prisma/client";
 
 export async function getAllDiscussions(locationId:number) {
     const client = await getPrisma();
