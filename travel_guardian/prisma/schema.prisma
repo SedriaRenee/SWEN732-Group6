@@ -14,10 +14,10 @@ model location {
   lon         String        @db.VarChar(15)
   type        String        @db.VarChar(15)
   parentId    Int?
+  discussions discussions[]
   parent      location?     @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children    location[]    @relation("LocationToLocation")
   reports     report[]
-  discussions discussions[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
@@ -46,13 +46,13 @@ model users {
 model discussions {
   id         Int      @id @default(autoincrement())
   title      String   @db.VarChar(400)
-  content    String   @db.VarChar(400)
   created_at DateTime @default(now())
   creatorId  Int
-  creator    users    @relation(fields: [creatorId], references: [id])
-  replies    reply[]
   locationId Int
+  content    String   @db.VarChar(400)
+  creator    users    @relation(fields: [creatorId], references: [id])
   location   location @relation(fields: [locationId], references: [id])
+  replies    reply[]
 }
 
 model reply {
