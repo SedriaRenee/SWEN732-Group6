@@ -18,6 +18,29 @@ export async function getCountries(): Promise<location[]> {
     return client.location.findMany({ where: { type: "country" } });
 }
 
+export async function createLocation(name: string, parentName: string): Promise<location> {
+    const client = await getPrisma();
+
+    let parentId = null;
+    if (parentName.length > 0) {
+        
+        const parent = await client.location.findMany({where: {name: parentName}});
+
+        if (parent.length == 0) {
+            //  Location shoudln't be creeated without a parent
+            // Enabled for testing purposes
+
+            const parent = await client.location.create({data: {name: parentName, type: "state", lat: "0", lon: "0", parentId: null}});
+            parentId = parent.id;
+        } else {
+            // TODO: select correct parent
+            parentId = parent[0].id;
+        }
+    }
+
+    return client.location.create({ data: { name, type: "city", lat: "0", lon: "0", parentId } });
+}
+
 // Location model that includes only the immediate parent name, and basic location info. Used for searching
 export type LocationResult = {
     id: number;
