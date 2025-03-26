@@ -7,4 +7,4 @@ test("Get Reports", async () => {
     const reports = await getReports(roc.id);
     assert.isArray(reports, "Reports is not an array");
     assert(reports.length == 0, "Reports is not empty");
-});
+}); 
