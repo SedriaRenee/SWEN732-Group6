@@ -46,10 +46,23 @@ describe("Reply Service Tests", () => {
     });
 
     afterEach(async () => {
-        await prisma.reply.deleteMany();
-        await prisma.discussions.deleteMany();
-        await prisma.users.deleteMany();
-        await prisma.location.deleteMany();
+        await prisma.reply.delete(
+            {where:{
+                id:replyId
+            }}
+        );
+        await prisma.discussions.delete(
+            {where:{
+                    id:discussionId
+                }}
+        );
+        await prisma.users.delete({
+            where: {
+                id: userId
+            }});
+        await prisma.location.delete({
+            where:{id:locationId},
+        })
     });
 
     test("Create a new reply", async () => {
