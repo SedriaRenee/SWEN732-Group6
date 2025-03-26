@@ -8,15 +8,16 @@ datasource db {
 }
 
 model location {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(255)
-  lat      String     @db.VarChar(15)
-  lon      String     @db.VarChar(15)
-  type     String     @db.VarChar(15)
-  parentId Int?
-  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children location[] @relation("LocationToLocation")
-  reports  report[]
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  lat         String        @db.VarChar(15)
+  lon         String        @db.VarChar(15)
+  type        String        @db.VarChar(15)
+  parentId    Int?
+  discussions discussions[]
+  parent      location?     @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    location[]    @relation("LocationToLocation")
+  reports     report[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
@@ -31,16 +32,43 @@ model report {
 }
 
 model users {
- id  Int @id @default(autoincrement())
-  username String @db.VarChar(255)
-  email String @db.VarChar(255)
-  type  user_type
-  password String @db.VarChar(255)
-  first_name String @db.VarChar(400)
-  last_name String @db.VarChar(400)
+  id          Int           @id @default(autoincrement())
+  username    String        @db.VarChar(255)
+  email       String        @db.VarChar(255)
+  type        user_type
+  password    String        @db.VarChar(255)
+  first_name  String        @db.VarChar(400)
+  last_name   String        @db.VarChar(400)
+  discussions discussions[]
+  reply       reply[]
 }
 
-enum user_type{
+model discussions {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  creatorId  Int
+  locationId Int
+  content    String   @db.VarChar(400)
+  creator    users    @relation(fields: [creatorId], references: [id])
+  location   location @relation(fields: [locationId], references: [id])
+  replies    reply[]
+}
+
+model reply {
+  id           Int          @id @default(autoincrement())
+  content      String       @db.VarChar(400)
+  created_at   DateTime     @default(now())
+  creatorId    Int
+  discussionId Int?
+  parentId     Int?
+  creator      users        @relation(fields: [creatorId], references: [id])
+  discussion   discussions? @relation(fields: [discussionId], references: [id])
+  parent       reply?       @relation("PostParent", fields: [parentId], references: [id])
+  children     reply[]      @relation("PostParent")
+}
+
+enum user_type {
   travler
   local
 }

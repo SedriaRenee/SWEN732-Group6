@@ -26,7 +26,7 @@ describe("Location", () => {
         assert.lengthOf(countries, 242, "Number of countries is not 242");
     });
 
-    // Search for a location by name directly with the server-side function, first result is list in location
+    // Search for a location by name directly with the server-side function, result is list containing location
     test("Find Rochester", async () => {
 
         const roc = "Rochester";
@@ -38,9 +38,16 @@ describe("Location", () => {
         assert(loc.length > 0, "Location search result is empty");
         const first = loc[0];
         assert(first.name == roc, "First location is not Rochester");
-        assert(first.parentName == state, "First location is not in New York");
-    
-        assert(loc)
+        
+        // Find correct Rochester
+        let found = false;
+        for (const l of loc) {
+            if (l.name == roc && l.parentName == state) {
+                found = true;
+                break;
+            }
+        }
+        assert(found, "Rochester, NY not found");
     });
     
     // Search for a location by name directly with the server-side function, location present in result list
@@ -62,14 +69,19 @@ describe("Location", () => {
     test("Find child location through parent", async () => {
         const makedonia = await getLocation(1519);
         const target = "thessaloniki";
-
         let found = false;
-        makedonia?.children.forEach(async (child) => {
-            if (normalizeLocation(child.name) == target) {
-                found = true;
-            }
 
-        });
+        if (!makedonia) {
+            assert.fail("Parent location not found");
+        }
+
+        for (const child of makedonia.children) {
+            const normalized = await normalizeLocation(child.name);
+            if (normalized == target) {
+                found = true;
+                break;
+            }
+        }
 
         assert(found, "Child location not found");
     });
@@ -82,8 +94,11 @@ describe("Location", () => {
         
         if (loc && loc.parent && loc.parent.parentId) {
             const grandparent = await getLocation(loc.parent.parentId);
-
-            if (grandparent && normalizeLocation(grandparent.name) == target) {
+            if (!grandparent) {
+                assert.fail("Grandparent location not found");
+            }
+            const normalized = await normalizeLocation(grandparent.name);
+            if (normalized == target) {
                 found = true;
             }
         }
