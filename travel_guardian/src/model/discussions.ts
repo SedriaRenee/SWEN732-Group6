@@ -10,7 +10,7 @@ export async function getAllDiscussions(locationId:number) {
 
 export async function getDiscussions(discussionId: number){
     const client = await getPrisma();
-    return client.discussions.findFirst({where:{id:discussionId}});
+    return client.discussions.findUnique({where:{id:discussionId}});
 }
 
 export async function createDiscussion(title:string,content:string,creatorId:number,locationId:number){

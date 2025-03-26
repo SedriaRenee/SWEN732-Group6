@@ -11,7 +11,7 @@ export default async function Location({ params }: { params: Promise<{ id: strin
     return <LocationPage location={location} />;
   } else {
     return <div className="flex flex-col gap-4 items-center">
-      <h1 className="text-red text-bold">Location not found</h1>  
+      <h1 className="text-red text-bold">Location not found</h1>
     </div>;
   }
 }

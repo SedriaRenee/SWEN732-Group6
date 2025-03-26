@@ -1,75 +1,51 @@
-import { test, describe, beforeAll, afterAll, beforeEach, afterEach, expect } from "vitest";
+import { prismaMock } from "./__mocks__/prismaMocks";
+import { test, describe, beforeEach, afterEach, expect,vi } from "vitest";
 import { createReply, getReplyHistory, updateReply, deleteReply } from "@/model/reply";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
 
-beforeAll(async () => {
-    await prisma.$connect();
-});
-
-afterAll(async () => {
-    await prisma.$disconnect();
-});
-
-describe("Reply Service Tests", () => {
+describe("Reply Service Tests ", () => {
     let userId: number;
     let discussionId: number;
     let locationId: number;
     let replyId: number;
 
     beforeEach(async () => {
-        // Create test location
-        const location = await prisma.location.create({
+        // Mock Location Creation
+        const location = await prismaMock.location.create({
             data: { name: "Test Location", lat: "40.7128", lon: "-74.0060", type: "city" },
         });
         locationId = location.id;
 
-        // Create test user
-        const user = await prisma.users.create({
+        // Mock User Creation
+        const user = await prismaMock.users.create({
             data: {
-                username: "testuser",
+                username: "tester",
                 email: "test@example.com",
                 password: "password123",
                 first_name: "Test",
                 last_name: "User",
-                type: "travler",
+                type: "traveler",
             },
         });
         userId = user.id;
 
-        // Create test discussion
-        const discussion = await prisma.discussions.create({
+        // Mock Discussion Creation
+        const discussion = await prismaMock.discussions.create({
             data: { title: "Test Discussion", content: "Discussion content", creatorId: userId, locationId },
         });
         discussionId = discussion.id;
     });
 
     afterEach(async () => {
-        await prisma.reply.delete(
-            {where:{
-                id:replyId
-            }}
-        );
-        await prisma.discussions.delete(
-            {where:{
-                    id:discussionId
-                }}
-        );
-        await prisma.users.delete({
-            where: {
-                id: userId
-            }});
-        await prisma.location.delete({
-            where:{id:locationId},
-        })
+        vi.resetAllMocks();
     });
 
     test("Create a new reply", async () => {
-        expect.assertions(2);
+        expect.assertions(3);
         const reply = await createReply(userId, discussionId, "This is a test reply");
         replyId = reply.id;
         expect(reply).toHaveProperty("id");
+        expect(reply).toHaveProperty("created_at")
         expect(reply.content).toBe("This is a test reply");
     });
 

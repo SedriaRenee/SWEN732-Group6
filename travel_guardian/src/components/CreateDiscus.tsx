@@ -5,7 +5,7 @@ import { Component } from "react";
 type Props = {
     locationId: number;
     close: () => void;
-    userId: number;
+    /*userId: number;*/
 };
 
 type State = {
@@ -13,7 +13,7 @@ type State = {
     content: string;
 };
 
-export default class CreateNote extends Component<Props, State> {
+export default class CreateDiscus extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -22,7 +22,7 @@ export default class CreateNote extends Component<Props, State> {
         };
     }
     handleSubmit(){
-        createDiscussion(this.state.title,this.state.content,this.props.userId,this.props.locationId);
+        createDiscussion(this.state.title,this.state.content,1,this.props.locationId);
         this.setState({ title: "", content: "" });
         this.props.close();
     }
