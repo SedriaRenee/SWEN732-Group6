@@ -39,7 +39,7 @@ Populates the database with locations with Python and Prisma.
 2. `pip3 install -r requirements.txt`
 3. Download basic cities CSV export from https://simplemaps.com/data/world-cities and move to folder
 4. `prisma db pull`
-5. `prisma db pull`
+5. `prisma generate`
 6. `python main.py`
 
 
