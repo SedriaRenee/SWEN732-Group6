@@ -7,7 +7,12 @@ export async function getReports(locationId: number): Promise<report[]> {
     return client.report.findMany({ where: { locId: locationId } });
 }
 
-export async function createReport(name: string, desc: string, locationId: number): Promise<report> {
+export async function createReport(name: string, desc: string, locationId: number, tag: string): Promise<report> {
     const client = await getPrisma();
-    return client.report.create({ data: { name, desc, locId: locationId } });
+    return client.report.create({ data: { name, desc, locId: locationId, tag } });
+}
+
+export async function searchReport(keyword: string) : Promise<report[] | null> { 
+    const client = await getPrisma(); 
+    return client.report.findMany({where: {tag: keyword}});
 }
