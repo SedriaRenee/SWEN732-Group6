@@ -1,3 +1,4 @@
+'use client';
 import { describe } from 'node:test';
 import { vi } from "vitest";
 import {test, assert} from 'vitest';
