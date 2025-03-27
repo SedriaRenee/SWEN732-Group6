@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        id="root" className={`${josefinSans.variable} ${notoSansMono.variable} antialiased`}
+        id="root" className={`${josefinSans.variable} ${notoSansMono.variable} antialiased  bg-background`}
       >
         <Navbar />
         <div className="p-4">
