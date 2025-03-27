@@ -3,6 +3,7 @@ import { getAllDiscussions } from "@/model/discussions";
 import { discussions } from '@prisma/client';
 import CreateDiscus from "@/components/CreateDiscus";
 import {Modal,Button,ModalContent} from "@heroui/react";
+import Link from "next/link";
 
 type Props = {
     locationId: number;
@@ -50,8 +51,10 @@ export default function Discussion(props: Props) {
                 {discussionsList.map((d) => (
                     <li key={d.id}>
                         <div className="bg-slate-900 rounded-lg p-4 shadow-md mb-4">
+                            <Link href={`/discussions/${d.id}`}>
                             <h4 className="text-3xl">{d.title}</h4>
                             <p className="text-gray-400">{d.content}</p>
+                            </Link>
                         </div>
                     </li>
                 ))}

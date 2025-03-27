@@ -1,5 +1,7 @@
 "use server";
 import { getPrisma } from "@/lib/db";
+import {discussions} from "@prisma/client";
+
 
 export async function getAllDiscussions(locationId:number) {
     const client = await getPrisma();
@@ -8,9 +10,13 @@ export async function getAllDiscussions(locationId:number) {
     );
 }
 
-export async function getDiscussions(discussionId: number){
+export async function getDiscussions(discussionId: number):Promise<discussions |null> {
     const client = await getPrisma();
-    return client.discussions.findUnique({where:{id:discussionId}});
+    return client.discussions.findUnique(
+        {where:{id:discussionId},
+        include:{users:true},
+        }
+    );
 }
 
 export async function createDiscussion(title:string,content:string,creatorId:number,locationId:number){

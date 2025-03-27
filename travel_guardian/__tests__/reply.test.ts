@@ -1,6 +1,6 @@
 import { prismaMock } from "./__mocks__/prismaMocks";
 import { test, describe, beforeEach, afterEach, expect,vi } from "vitest";
-import { createReply, getReplyHistory, updateReply, deleteReply } from "@/model/reply";
+import { createReply, getReplyHeads, updateReply, deleteReply } from "@/model/reply";
 
 
 describe("Reply Service Tests ", () => {
@@ -49,16 +49,6 @@ describe("Reply Service Tests ", () => {
         expect(reply.content).toBe("This is a test reply");
     });
 
-    test("Fetch reply history for user", async () => {
-        expect.assertions(2);
-        const reply = await createReply(userId, discussionId, "Another reply");
-        replyId = reply.id;
-
-        const replies = await getReplyHistory(userId);
-        expect(replies.length).toBeGreaterThan(0);
-        expect(replies[0].creatorId).toBe(userId);
-    });
-
     test("Update a reply", async () => {
         expect.assertions(1);
         const reply = await createReply(userId, discussionId, "Initial content");
@@ -74,7 +64,7 @@ describe("Reply Service Tests ", () => {
         replyId = reply.id;
 
         await deleteReply(replyId);
-        const replies = await getReplyHistory(userId);
+        const replies = await getReplyHeads(userId);
         expect(replies.some((r) => r.id === replyId)).toBe(false);
     });
 });

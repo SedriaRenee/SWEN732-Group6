@@ -10,7 +10,7 @@ export default async function Location({ params }: { params: Promise<{ id: strin
   if (location) {
     return <LocationPage location={location} />;
   } else {
-    return <div className="flex flex-col gap-4 items-center">
+    return <div className="flex flex-col gap-4 items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
       <h1 className="text-red text-bold">Location not found</h1>
     </div>;
   }

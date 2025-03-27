@@ -35,7 +35,7 @@ describe("Discussion Service Tests ", () => {
         userId = 1;
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         vi.resetAllMocks();
     });
 
