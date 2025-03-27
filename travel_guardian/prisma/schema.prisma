@@ -8,16 +8,16 @@ datasource db {
 }
 
 model location {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(255)
-  lat      String     @db.VarChar(15)
-  lon      String     @db.VarChar(15)
-  type     String     @db.VarChar(15)
-  parentId Int?
-  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children location[] @relation("LocationToLocation")
-  reports  report[]
-  discussions discussions[] @relation("LocationToDiscussions")
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  lat         String        @db.VarChar(15)
+  lon         String        @db.VarChar(15)
+  type        String        @db.VarChar(15)
+  parentId    Int?
+  discussions discussions[]
+  parent      location?     @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    location[]    @relation("LocationToLocation")
+  reports     report[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
@@ -33,17 +33,16 @@ model report {
 }
 
 model users {
-  id        Int          @id @default(autoincrement())
-  username  String       @db.VarChar(255)
-  email     String       @db.VarChar(255)
-  type      user_type
-  password  String       @db.VarChar(255)
-  first_name String      @db.VarChar(400)
-  last_name String       @db.VarChar(400)
-  discussions discussions[] @relation("UserToDiscussions")
-  replies    reply[]     @relation("UserToReplies")
+  id          Int           @id @default(autoincrement())
+  username    String        @db.VarChar(255)
+  email       String        @db.VarChar(255)
+  type        user_type
+  password    String        @db.VarChar(255)
+  first_name  String        @db.VarChar(400)
+  last_name   String        @db.VarChar(400)
+  discussions discussions[]
+  reply       reply[]
 }
-
 
 model discussions {
   id         Int      @id @default(autoincrement())
@@ -52,9 +51,9 @@ model discussions {
   creatorId  Int
   locationId Int
   content    String   @db.VarChar(400)
-  creator    users    @relation("UserToDiscussions", fields: [creatorId], references: [id])
-  location   location @relation("LocationToDiscussions", fields: [locationId], references: [id])
-  replies    reply[]
+  users      users    @relation(fields: [creatorId], references: [id])
+  location   location @relation(fields: [locationId], references: [id])
+  reply      reply[]
 }
 
 model reply {
@@ -64,13 +63,13 @@ model reply {
   creatorId    Int
   discussionId Int?
   parentId     Int?
-  creator      users        @relation("UserToReplies", fields: [creatorId], references: [id])
-  discussion   discussions? @relation(fields: [discussionId], references: [id])
-  parent       reply?       @relation("PostParent", fields: [parentId], references: [id])
-  children     reply[]      @relation("PostParent")
+  users        users        @relation(fields: [creatorId], references: [id])
+  discussions  discussions? @relation(fields: [discussionId], references: [id])
+  reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
+  other_reply  reply[]      @relation("replyToreply")
 }
 
-enum user_type{
+enum user_type {
   travler
   local
 }
