@@ -25,9 +25,11 @@ export default class CreateDiscus extends Component<Props, State> {
 
     handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        createDiscussion(this.state.title, this.state.content, this.props.userId, this.props.locationId);
-        this.setState({ title: "", content: "" });
-        this.props.close();
+        createDiscussion(this.state.title, this.state.content, this.props.userId, this.props.locationId).then(() => {
+
+            this.setState({ title: "", content: "" });
+            this.props.close();
+        });
     };
 
     render() {

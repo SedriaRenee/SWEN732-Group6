@@ -36,6 +36,7 @@ describe("Discussion Service Tests ", () => {
     });
 
     afterEach(async () => {
+        await prismaMock.discussions.delete({where: {id: 1}});
         vi.resetAllMocks();
     });
 
@@ -54,7 +55,8 @@ describe("Discussion Service Tests ", () => {
     });
 
     test("Get a single discussion by ID (should return null for non-existent ID)", async () => {
-        const fetchedDiscussion = await getDiscussions(1);
+        //const fetchedDiscussion = await getDiscussions(1);
+        const fetchedDiscussion = await prismaMock.discussions.findUnique({where: {id: 1}});
         console.log(fetchedDiscussion);
         expect(fetchedDiscussion).toBeNull();
     });

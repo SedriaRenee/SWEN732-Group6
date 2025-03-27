@@ -48,7 +48,7 @@ export default function LocationPage() {
 
   return (
       <div className="flex flex-col gap-4 items-center w-full min-h-screen">
-        <div>
+        <div className="w-full">
           <h2 className="text-center text-blue-500 text-2xl">
             Request New Location
           </h2>
@@ -56,7 +56,7 @@ export default function LocationPage() {
           {rand != null ? (
               <form
                   onSubmit={submit}
-                  className="flex flex-col justify-content items-center w-1/2 m-auto"
+                  className="flex flex-col justify-content items-center w-1/3 m-auto"
               >
                 <label htmlFor="locName" className="mt-3">
                   Name of Location (e.g. '{exampleLocations[rand].name}')

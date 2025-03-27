@@ -20,6 +20,7 @@ export async function getDiscussions(discussionId: number):Promise<discussions |
 }
 
 export async function createDiscussion(title:string,content:string,creatorId:number,locationId:number){
+    console.log(`Creating discussion with title ${title} and content ${content} by user ${creatorId} at location ${locationId}`);
     const client = await getPrisma();
     return client.discussions.create({
         data: {
