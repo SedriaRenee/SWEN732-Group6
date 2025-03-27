@@ -62,14 +62,17 @@ describe("Location", () => {
     test("Find child location through parent", async () => {
         const makedonia = await getLocation(1519);
         const target = "thessaloniki";
-
         let found = false;
-        makedonia?.children.forEach(async (child) => {
-            if (normalizeLocation(child.name) == target) {
+        if (!makedonia) {
+            assert.fail("Parent location not found");
+        }
+        for (const c of makedonia.children) {
+            const normalized = await normalizeLocation(c.name);
+            if (normalized == target) {
                 found = true;
+                break;
             }
-
-        });
+        }
 
         assert(found, "Child location not found");
     });
@@ -82,8 +85,11 @@ describe("Location", () => {
         
         if (loc && loc.parent && loc.parent.parentId) {
             const grandparent = await getLocation(loc.parent.parentId);
-
-            if (grandparent && normalizeLocation(grandparent.name) == target) {
+            if (!grandparent) {
+                assert.fail("Grandparent not found");
+            }
+            const normalized = await normalizeLocation(grandparent.name);
+            if (normalized == target)  {
                 found = true;
             }
         }
