@@ -11,3 +11,8 @@ export async function createReport(name: string, desc: string, locationId: numbe
     const client = await getPrisma();
     return client.report.create({ data: { name, desc, locId: locationId, tag } });
 }
+
+export async function searchReport(keyword: string) : Promise<report[] | null> { 
+    const client = await getPrisma(); 
+    return client.report.findMany({where: {tag: keyword}});
+}
