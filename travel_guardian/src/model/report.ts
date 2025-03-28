@@ -16,3 +16,8 @@ export async function searchReport(keyword: string) : Promise<report[] | null> {
     const client = await getPrisma(); 
     return client.report.findMany({where: {tag: keyword}});
 }
+
+export async function deleteReport(reportId: number) {
+    const client = await getPrisma();
+    return client.report.delete({where:{id:reportId}});    
+}

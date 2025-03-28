@@ -98,6 +98,7 @@ export const prismaMock = {
             return newReport;
         }),
         findMany: vi.fn(async ({ where }) => reportsMock.filter((r) => r.locId === where.locId)),
+        findManyTag: vi.fn(async ({where}) => reportsMock.filter((r) => r.tag === where.tag)),
         delete: vi.fn(async ({ where }) => {
             const index = reportsMock.findIndex((r) => r.id === where.id);
             return index !== -1 ? reportsMock.splice(index, 1)[0] : null;
