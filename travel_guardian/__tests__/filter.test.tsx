@@ -24,5 +24,6 @@ describe("Filter Reports", () => {
         const keyword = "HIGH-RISK";
         const reports = await searchReport(keyword);
         console.log('Generated Query: ', reports);
+        expect(reports).toBe(1); // minimum 
     });
 });
