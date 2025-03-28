@@ -1,7 +1,6 @@
-import {prismaMock} from "./__mocks__/prismaMocks";
 import { test, describe, beforeEach, afterEach, expect, vi } from "vitest";
 import { createDiscussion, getAllDiscussions, getDiscussions, updateDiscussion, deleteDiscussion } from "@/model/discussions";
-
+import { prismaMock } from "../__mocks__/prismaMocks";
 
 describe("Discussion Service Tests ", () => {
     let userId: number;

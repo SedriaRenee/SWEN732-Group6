@@ -2,9 +2,8 @@ import { describe } from 'node:test';
 
 import { beforeEach, afterEach, expect } from "vitest";
 import { vi } from "vitest";
-import {test, assert} from 'vitest';
-import { getReports, createReport, searchReport } from '@/model/report';
-import { prismaMock, reportsMock } from "./__mocks__/prismaMocks";
+import {test} from 'vitest';
+import { prismaMock } from "../__mocks__/prismaMocks";
 
 describe("Filter Reports", () => {
     let id: number;

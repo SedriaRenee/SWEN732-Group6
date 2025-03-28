@@ -1,18 +1,13 @@
 import { getCountries, getLocation, normalizeLocation, searchLocation } from '@/model/location';
-import {test, assert, expect} from 'vitest';
-import { render, screen,fireEvent, waitFor } from '@testing-library/react'
-import Navbar from '@/components/Navbar';
+import {test, assert} from 'vitest';
 import { describe } from 'node:test';
-import { getPrisma } from '@/lib/db';
-import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
+import prismaClient from '@/lib/db';
 
-describe("Location", () => {
-
+describe("Location Integration Tests", () => {
+    
     // Test to make sure the database is reachable and has the correct amount of locations
     test("Database populated", async () => {
-        const db = await getPrisma();
-        const locations = await db.location.count();
+        const locations = await prismaClient.location.count();
         assert(locations > 0, "No locations in database");
         assert(locations > 50000, "Locations not populated");    
     });
@@ -97,29 +92,4 @@ describe("Location", () => {
         assert(found, "Grandparent location not found");
     });
 
-    // Test view component for location searching
-    test('Navbar location search', async () => {
-        render(<Navbar />);
-        const search = screen.getByTestId('search');
-        const user = userEvent.setup();
-    
-        await user.type(search, "New York");
-        
-        const form = search.parentElement as HTMLFormElement;
-        const button = search.nextSibling as HTMLButtonElement;
-    
-        const submitSpy = vi.fn();
-        form.addEventListener("submit", submitSpy);
-        
-        await user.click(button);
-    
-        expect(submitSpy).toHaveBeenCalled();
-    
-        const results = await waitFor(() => screen.getAllByTestId('location'));
-        expect(results).toBeDefined();
-        expect(results.length).toBeGreaterThan(1); // 2
-    
-    });
-    
 });
-

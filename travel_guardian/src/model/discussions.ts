@@ -1,18 +1,16 @@
 "use server";
-import { getPrisma } from "@/lib/db";
+import prisma from "@/lib/db";
 import {discussions} from "@prisma/client";
 
 
 export async function getAllDiscussions(locationId:number) {
-    const client = await getPrisma();
-    return client.discussions.findMany({
+    return prisma.discussions.findMany({
         where:{ locationId : locationId }}
     );
 }
 
 export async function getDiscussions(discussionId: number):Promise<discussions |null> {
-    const client = await getPrisma();
-    return client.discussions.findUnique(
+    return prisma.discussions.findUnique(
         {where:{id:discussionId},
         include:{users:true},
         }
@@ -20,9 +18,7 @@ export async function getDiscussions(discussionId: number):Promise<discussions |
 }
 
 export async function createDiscussion(title:string,content:string,creatorId:number,locationId:number){
-    console.log(`Creating discussion with title ${title} and content ${content} by user ${creatorId} at location ${locationId}`);
-    const client = await getPrisma();
-    return client.discussions.create({
+    return prisma.discussions.create({
         data: {
             title: title,
             content: content,
@@ -33,8 +29,7 @@ export async function createDiscussion(title:string,content:string,creatorId:num
 }
 
 export async function updateDiscussion(discussionId:number,title:string, content:string){
-    const client = await getPrisma();
-    return client.discussions.update({
+    return prisma.discussions.update({
         where:{id:discussionId},
        data:{
             title:title,
@@ -44,8 +39,7 @@ export async function updateDiscussion(discussionId:number,title:string, content
 }
 
 export async function deleteDiscussion(discussionId:number){
-    const client = await getPrisma();
-    return client.discussions.delete({where:{id:discussionId}});
+    return prisma.discussions.delete({where:{id:discussionId}});
 }
 
 

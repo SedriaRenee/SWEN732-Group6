@@ -1,4 +1,4 @@
-import { prismaMock } from "./__mocks__/prismaMocks";
+import { prismaMock } from "../__mocks__/prismaMocks";
 import { test, describe, beforeEach, afterEach, expect,vi } from "vitest";
 import { createReply, getReplyHeads, updateReply, deleteReply } from "@/model/reply";
 

@@ -1,6 +1,9 @@
 'use server';
 import { PrismaClient } from '@prisma/client';
 
+const prisma: PrismaClient = new PrismaClient();
+export default prisma;
+/*
 let prismaClient: PrismaClient | undefined;
 
 export async function getPrisma() {
@@ -10,3 +13,4 @@ export async function getPrisma() {
 
   return prismaClient;
 }
+*/
