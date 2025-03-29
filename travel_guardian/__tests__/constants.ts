@@ -54,6 +54,16 @@ export const testUser: users = {
   type: "travler",
 };
 
+export const testNewUser: users = {
+  id: 2,
+  username: "sampleuser",
+  email: "sample@example.com",
+  password: "wordpass321",
+  first_name: "Sample",
+  last_name: "User",
+  type: "local",
+};
+
 export const testDiscussion: discussions = {
   id: 1,
   title: "Test Discussion",
