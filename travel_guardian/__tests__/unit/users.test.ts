@@ -39,7 +39,6 @@ describe("User Unit Tests", () => {
 
     test("Find User by Username", async () => {
         vi.spyOn(prisma.users, "findFirst").mockResolvedValue(testUser);
-
         const user = await findUser(testUser.username);
         
         if (!user) {
@@ -52,7 +51,6 @@ describe("User Unit Tests", () => {
 
     test("Find User by Email", async () => {
         vi.spyOn(prisma.users, "findFirst").mockResolvedValue(testUser);
-
         const user = await findUserByEmail(testUser.email);
         
         if (!user) {
@@ -93,6 +91,7 @@ describe("User Unit Tests", () => {
         vi.spyOn(prisma.users, "findUnique").mockResolvedValue(testUser);
         vi.spyOn(prisma.users, "delete").mockResolvedValue(testUser);
         const user = await deleteUser(userId);
+        
         assert.isObject(user);
         expect(user!!.id).toBe(userId);
 
