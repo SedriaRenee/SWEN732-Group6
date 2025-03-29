@@ -17,3 +17,7 @@ export async function searchReport(keyword: string) : Promise<report[] | null> {
 export async function deleteReport(reportId: number) {
     return prisma.report.delete({where:{id:reportId}});    
 }
+
+export async function findByTag(tag: string) {
+    return prisma.report.findMany({ where: { tag } });
+}

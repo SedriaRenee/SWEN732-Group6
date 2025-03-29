@@ -1,57 +1,58 @@
 import { describe } from 'node:test';
-
 import { beforeEach, afterEach, expect } from "vitest";
 import { vi } from "vitest";
 import {test} from 'vitest';
-import { prismaMock } from "../__mocks__/prismaMocks";
+import { testCity, testReports } from '../constants';
+import { createLocation } from '@/model/location';
+import { createReport, findByTag } from '@/model/report';
+import prisma from '@/lib/db';
+
+vi.mock("@/lib/db");
 
 describe("Filter Reports", () => {
     let id: number;
     let tag: string;
 
-    beforeEach(async () => {  // Mock Report Creation
-        const report = await prismaMock.report.create({
-            data: { name: "Los Angelous", desc: "A sinful city.", locId: 3, tag: "HIGH-RISK" },
-        });
-        const report2 = await prismaMock.report.create({
-            data: { name: "Dukie Land", desc: "Duck headquarters.", locId: 3, tag: "LOW-RISK" },
-        });
-        const report3 = await prismaMock.report.create( {
-            data: {name: "Rockland", desc:" Place full of rocks.", locId: 3, tag:"NO-RISK"},
-        });
-//        console.log('Mock Reports1:', reportsMock);         // Debugging: Check if reports are added
-    });
+    let locationId: number;
 
-    afterEach(async () => {
-        await prismaMock.report.delete({where :{id:1}});
-        await prismaMock.report.delete({where :{id:2}});
-        await prismaMock.report.delete({where: {id:3}});        
-        vi.resetAllMocks();
+    beforeEach(async () => {  // Mock Report Creation
+        vi.clearAllMocks();
+
+        // Mock Location
+        vi.spyOn(prisma.location, "create").mockResolvedValue(testCity);
+        const location = await createLocation(testCity.name, "");
+        locationId = location.id;
+        
+        // Mock Reports for Tests
+        for (let report of testReports) {
+            vi.spyOn(prisma.report, "create").mockResolvedValue(report);
+            const r = await createReport(report.name, report.desc, locationId, report.tag ?? "");
+        }
     });
     
     test("GetFilter NO RISK", async () => {
         const keyword = "NO-RISK";
-        const reports = await prismaMock.report.findManyTag({ where: { tag: keyword } });
-        console.log('Generated Query: ', reports);
+        vi.spyOn(prisma.report, "findMany").mockResolvedValue([testReports[2]]);
+        const reports = await findByTag(keyword);
         expect(reports).not.toBeNull();
         expect(reports).not.toBeUndefined();
-        expect(reports.length).toBeGreaterThanOrEqual(1);
+        expect(reports.length).toBe(1);
     });
 
     test("GetFilter LOW RISK", async () => {
         const keyword = "LOW-RISK";
-        const reports = await prismaMock.report.findManyTag({ where: { tag: keyword } });
-        console.log('Generated Query 4 LOW RISK: ', reports);
+        vi.spyOn(prisma.report, "findMany").mockResolvedValue([testReports[1]]);
+        const reports = await findByTag(keyword);
         expect(reports).not.toBeNull();
         expect(reports).not.toBeUndefined();
-        expect(reports.length).toBeGreaterThanOrEqual(1);
+        expect(reports.length).toBe(1);
     });
 
     test("GetFilter HIGH RISK", async () => {
         const keyword = "HIGH-RISK";
-        const reports = await prismaMock.report.findManyTag({where: {tag:keyword}});
-        console.log('Generated Query: ', reports);
-        expect(reports).toHaveLength(1); // minimum 
+        vi.spyOn(prisma.report, "findMany").mockResolvedValue([testReports[0]]);
+        const reports = await findByTag(keyword);
+        expect(reports).toHaveLength(1); 
     });
 
 });

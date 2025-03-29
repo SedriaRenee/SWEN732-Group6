@@ -1,7 +1,12 @@
 import { prismaMock } from "../__mocks__/prismaMocks";
 import { test, describe, beforeEach, afterEach, expect,vi } from "vitest";
 import { createReply, getReplyHeads, updateReply, deleteReply } from "@/model/reply";
+import prisma from "@/lib/db";
+import { createDiscussion } from "@/model/discussions";
+import { testCity, testDiscussion, testReply, testUser } from "../constants";
+import { createLocation } from "@/model/location";
 
+vi.mock("@/lib/db");
 
 describe("Reply Service Tests ", () => {
     let userId: number;
@@ -10,29 +15,22 @@ describe("Reply Service Tests ", () => {
     let replyId: number;
 
     beforeEach(async () => {
+        vi.resetAllMocks();
+
         // Mock Location Creation
-        const location = await prismaMock.location.create({
-            data: { name: "Test Location", lat: "40.7128", lon: "-74.0060", type: "city" },
-        });
-        locationId = location.id;
+        vi.spyOn(prisma.location, "create").mockResolvedValue(testCity);
+        const loc = await createLocation(testCity.name, "");
+        locationId = loc.id;
+
 
         // Mock User Creation
-        const user = await prismaMock.users.create({
-            data: {
-                username: "tester",
-                email: "test@example.com",
-                password: "password123",
-                first_name: "Test",
-                last_name: "User",
-                type: "traveler",
-            },
-        });
+        vi.spyOn(prisma.users, "create").mockResolvedValue(testUser);
+        const user = await prisma.users.create({data: testUser });
         userId = user.id;
 
-        // Mock Discussion Creation
-        const discussion = await prismaMock.discussions.create({
-            data: { title: "Test Discussion", content: "Discussion content", creatorId: userId, locationId },
-        });
+
+        vi.spyOn(prisma.discussions, "create").mockResolvedValue(testDiscussion);
+        const discussion = await createDiscussion(testDiscussion.title, testDiscussion.content, userId, locationId);
         discussionId = discussion.id;
     });
 
@@ -42,28 +40,38 @@ describe("Reply Service Tests ", () => {
 
     test("Create a new reply", async () => {
         expect.assertions(3);
-        const reply = await createReply(userId, discussionId, "This is a test reply");
+
+        vi.spyOn(prisma.reply, "create").mockResolvedValue(testReply);
+        const reply = await createReply(userId, discussionId, testReply.content);
         replyId = reply.id;
         expect(reply).toHaveProperty("id");
         expect(reply).toHaveProperty("created_at")
-        expect(reply.content).toBe("This is a test reply");
+        expect(reply.content).toBe(testReply.content);
     });
 
     test("Update a reply", async () => {
         expect.assertions(1);
-        const reply = await createReply(userId, discussionId, "Initial content");
+
+        vi.spyOn(prisma.reply, "create").mockResolvedValue(testReply);
+        const reply = await createReply(userId, discussionId, testReply.content);
         replyId = reply.id;
 
+        vi.spyOn(prisma.reply, "update").mockResolvedValue({...testReply, content: "Updated reply content"});
         const updatedReply = await updateReply(replyId, "Updated reply content");
         expect(updatedReply.content).toBe("Updated reply content");
     });
 
     test("Delete a reply", async () => {
         expect.assertions(1);
-        const reply = await createReply(userId, discussionId, "To be deleted");
+
+        vi.spyOn(prisma.reply, "create").mockResolvedValue(testReply);
+        const reply = await createReply(userId, discussionId, testReply.content);
         replyId = reply.id;
 
+        vi.spyOn(prisma.reply, "delete").mockResolvedValue(testReply);
         await deleteReply(replyId);
+
+        vi.spyOn(prisma.reply, "findMany").mockResolvedValue([]);
         const replies = await getReplyHeads(userId);
         expect(replies.some((r) => r.id === replyId)).toBe(false);
     });

@@ -1,5 +1,5 @@
 import { LocationResult } from "@/model/location";
-import { location, report } from "@prisma/client";
+import { discussions, location, reply, report, users } from "@prisma/client";
 
 export const testCity: location = {
   name: "Test City",
@@ -42,4 +42,59 @@ export const testNewReport: report = {
   tag: "LOW-RISK",
   id: 2,
   created: new Date(),
+};
+
+export const testUser: users = {
+  id: 1,
+  username: "testuser",
+  email: "test@example.com",
+  password: "password123",
+  first_name: "Test",
+  last_name: "User",
+  type: "travler",
+};
+
+export const testDiscussion: discussions = {
+  id: 1,
+  title: "Test Discussion",
+  content: "Test Content",
+  locationId: 1,
+  creatorId: 1,
+  created_at: new Date(),
+};
+
+export const testReports: report[] = [
+  {
+    name: "Los Angelous",
+    desc: "A sinful city.",
+    locId: 3,
+    tag: "HIGH-RISK",
+    created: new Date(),
+    id: 1,
+  },
+  {
+    name: "Dukie Land",
+    desc: "Duck headquarters.",
+    locId: 3,
+    tag: "LOW-RISK",
+    created: new Date(),
+    id: 2,
+  },
+  {
+    name: "Rockland",
+    desc: " Place full of rocks.",
+    locId: 3,
+    tag: "NO-RISK",
+    created: new Date(),
+    id: 3,
+  },
+];
+
+export const testReply: reply = {
+    creatorId: 1,
+    discussionId: 1,
+    content: "This is a test reply",
+    created_at: new Date(),
+    id: 1,
+    parentId: null
 };
