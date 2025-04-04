@@ -1,7 +1,11 @@
-import type { Metadata } from 'next';
+"use client"; 
+
+
+import { usePathname } from 'next/navigation';
 import { Josefin_Sans, Noto_Sans_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
+
 
 const josefinSans = Josefin_Sans({
   variable: '--font-josefin-sans',
@@ -13,25 +17,21 @@ const notoSansMono = Noto_Sans_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: 'Travel Guardian',
-  description: 'Learn about the world and travel safely',
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname(); 
+
+  // Hide navbar on login and signup pages
+  const hideNavbar = pathname === "/login" || pathname === "/signup";
+
   return (
     <html lang="en">
-      <body
-        id="root" className={`${josefinSans.variable} ${notoSansMono.variable} antialiased`}
-      >
-        <Navbar />
-        <div className="p-4">
-          {children}
-        </div>
+      <body id="root" className={`${josefinSans.variable} ${notoSansMono.variable}`}>
+        {!hideNavbar && <Navbar />}
+        <main>{children}</main>
       </body>
     </html>
   );

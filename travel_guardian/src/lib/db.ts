@@ -7,6 +7,5 @@ export async function getPrisma() {
   if (!prismaClient) {
     prismaClient = new PrismaClient();
   }
-
   return prismaClient;
 }

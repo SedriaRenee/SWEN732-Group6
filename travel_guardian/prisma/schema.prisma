@@ -8,15 +8,16 @@ datasource db {
 }
 
 model location {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(255)
-  lat      String     @db.VarChar(15)
-  lon      String     @db.VarChar(15)
-  type     String     @db.VarChar(15)
-  parentId Int?
-  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children location[] @relation("LocationToLocation")
-  reports  report[]
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  lat         String        @db.VarChar(15)
+  lon         String        @db.VarChar(15)
+  type        String        @db.VarChar(15)
+  parentId    Int?
+  discussions discussions[]
+  parent      location?     @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    location[]    @relation("LocationToLocation")
+  reports     report[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
@@ -27,5 +28,61 @@ model report {
   desc    String
   created DateTime @default(now())
   locId   Int
+  tag     String?  @default("NO-RISK") @db.VarChar(20)
   loc     location @relation(fields: [locId], references: [id])
+}
+
+model user {
+  id          Int           @id @default(autoincrement())
+  username    String        @unique @db.VarChar(255)
+  email       String        @unique @db.VarChar(255)
+  password    String        @db.VarChar(255)
+  first_name  String        @db.VarChar(400)
+  last_name   String        @db.VarChar(400)
+  discussions discussions[]
+  reply       reply[]
+  profile     profile?      @relation("UserProfile")
+}
+
+model discussions {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  creatorId  Int
+  locationId Int
+  content    String   @db.VarChar(400)
+  users      user     @relation(fields: [creatorId], references: [id])
+  location   location @relation(fields: [locationId], references: [id])
+  reply      reply[]
+}
+
+model reply {
+  id           Int          @id @default(autoincrement())
+  content      String       @db.VarChar(400)
+  created_at   DateTime     @default(now())
+  creatorId    Int
+  discussionId Int?
+  parentId     Int?
+  users        user         @relation(fields: [creatorId], references: [id])
+  discussions  discussions? @relation(fields: [discussionId], references: [id])
+  reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
+  other_reply  reply[]      @relation("replyToreply")
+}
+
+model profile {
+  id            String   @id @default(uuid())
+  userId        Int      @unique
+  user          user     @relation("UserProfile", fields: [userId], references: [id])
+  profilePic    String?
+  name          String?
+  age           Int?
+  hometown      String?
+  placesVisited String[]
+  placesToVisit String[]
+  description   String   @db.VarChar(400)
+}
+
+enum user_type {
+  travler
+  local
 }
