@@ -32,16 +32,16 @@ model report {
   loc     location @relation(fields: [locId], references: [id])
 }
 
-model users {
+model user {
   id          Int           @id @default(autoincrement())
-  username    String        @db.VarChar(255)
-  email       String        @db.VarChar(255)
-  type        user_type
+  username    String        @unique @db.VarChar(255)
+  email       String        @unique @db.VarChar(255)
   password    String        @db.VarChar(255)
   first_name  String        @db.VarChar(400)
   last_name   String        @db.VarChar(400)
   discussions discussions[]
   reply       reply[]
+  profile     profile?      @relation("UserProfile")
 }
 
 model discussions {
@@ -51,7 +51,7 @@ model discussions {
   creatorId  Int
   locationId Int
   content    String   @db.VarChar(400)
-  users      users    @relation(fields: [creatorId], references: [id])
+  users      user     @relation(fields: [creatorId], references: [id])
   location   location @relation(fields: [locationId], references: [id])
   reply      reply[]
 }
@@ -63,10 +63,23 @@ model reply {
   creatorId    Int
   discussionId Int?
   parentId     Int?
-  users        users        @relation(fields: [creatorId], references: [id])
+  users        user         @relation(fields: [creatorId], references: [id])
   discussions  discussions? @relation(fields: [discussionId], references: [id])
   reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
   other_reply  reply[]      @relation("replyToreply")
+}
+
+model profile {
+  id            String   @id @default(uuid())
+  userId        Int      @unique
+  user          user     @relation("UserProfile", fields: [userId], references: [id])
+  profilePic    String?
+  name          String?
+  age           Int?
+  hometown      String?
+  placesVisited String[]
+  placesToVisit String[]
+  description   String   @db.VarChar(400)
 }
 
 enum user_type {
