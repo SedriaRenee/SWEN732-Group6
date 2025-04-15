@@ -1,4 +1,3 @@
-import { prismaMock } from "../__mocks__/prismaMocks";
 import { test, describe, beforeEach, afterEach, expect,vi } from "vitest";
 import { createReply, getReplyHeads, updateReply, deleteReply } from "@/model/reply";
 import prisma from "@/lib/db";
@@ -24,8 +23,8 @@ describe("Reply Service Tests ", () => {
 
 
         // Mock User Creation
-        vi.spyOn(prisma.users, "create").mockResolvedValue(testUser);
-        const user = await prisma.users.create({data: testUser });
+        vi.spyOn(prisma.user, "create").mockResolvedValue(testUser);
+        const user = await prisma.user.create({data: testUser });
         userId = user.id;
 
 

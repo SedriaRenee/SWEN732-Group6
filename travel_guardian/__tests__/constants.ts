@@ -1,5 +1,5 @@
 import { LocationResult } from "@/model/location";
-import { discussions, location, reply, report, users } from "@prisma/client";
+import { discussions, location, reply, report, user } from "@prisma/client";
 
 export const testCity: location = {
   name: "Test City",
@@ -44,24 +44,22 @@ export const testNewReport: report = {
   created: new Date(),
 };
 
-export const testUser: users = {
+export const testUser: user = {
   id: 1,
   username: "testuser",
   email: "test@example.com",
   password: "password123",
   first_name: "Test",
   last_name: "User",
-  type: "travler",
 };
 
-export const testNewUser: users = {
+export const testNewUser: user = {
   id: 2,
   username: "sampleuser",
   email: "sample@example.com",
   password: "wordpass321",
   first_name: "Sample",
   last_name: "User",
-  type: "local",
 };
 
 export const testDiscussion: discussions = {

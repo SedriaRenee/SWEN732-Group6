@@ -1,6 +1,5 @@
 import { getCountries, getLocation, normalizeLocation, searchLocation } from '@/model/location';
-import {test, assert} from 'vitest';
-import { describe } from 'node:test';
+import {test, assert, describe} from 'vitest';
 import prismaClient from '@/lib/db';
 
 describe("Location Integration Tests", () => {

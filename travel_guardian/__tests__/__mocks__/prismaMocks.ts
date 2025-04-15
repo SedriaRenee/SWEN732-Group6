@@ -1,9 +1,9 @@
 import { vi } from "vitest";
-import {discussions, location, users, reply, report} from "@prisma/client";
+import {discussions, location, user, reply, report} from "@prisma/client";
 
 // In-memory storage for mock data
 export const discussionsMock: discussions[] = [];
-export const usersMock: users[] = [];
+export const usersMock: user[] = [];
 export const locationsMock: location[] = [];
 export const repliesMock: reply[] = [];
 export const reportsMock: report[] = [];
@@ -11,7 +11,7 @@ export const reportsMock: report[] = [];
 export const prismaMock = {
     users: {
         create: vi.fn(async ({ data }) => {
-            const newUser: users = {
+            const newUser: user = {
                 id: usersMock.length + 1,
                 ...data,
             };

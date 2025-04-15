@@ -19,8 +19,8 @@ describe("Discussion Service Tests ", () => {
 
 
         // Mock User Creation
-        vi.spyOn(prisma.users, "create").mockResolvedValue(testUser);
-        const user = await prisma.users.create({data: testUser });
+        vi.spyOn(prisma.user, "create").mockResolvedValue(testUser);
+        const user = await prisma.user.create({data: testUser });
         userId = user.id;
     });
 

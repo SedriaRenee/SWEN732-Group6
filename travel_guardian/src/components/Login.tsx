@@ -28,9 +28,11 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen">
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
+        <h1 className="text-3xl font-thin text-center text-black">Travel Guardian</h1>
+        
+        <h2 className="text-xl font-bold mb-4 text-center text-blue-600">Login</h2>
         
         {error && <p className="text-red-500 text-center">{error}</p>}
 
@@ -40,7 +42,7 @@ export default function Login() {
           placeholder="Email or Username"
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
-          className="w-full border p-2 mb-2 rounded"
+          className="w-full border-2 border-gray-500 focus:border-orange-500 focus:outline-hidden p-2 mb-2 rounded text-black"
           required
         />
 
@@ -49,7 +51,7 @@ export default function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full border-2 border-gray-500 focus:border-orange-500 focus:outline-hidden p-2 mb-4 rounded text-black"
           required
         />
 
@@ -65,9 +67,9 @@ export default function Login() {
         </div>
 
         <div className="mt-2 text-center">
-          <p className="text-sm">
-            Don't have an account?{" "}
-            <a href="/signup" className="text-blue-600 hover:underline">
+          <p className="text-sm text-gray-500">
+            Don't have an account?
+            <a href="/signup" className="ml-1 text-blue-600 hover:underline">
               Sign up
             </a>
           </p>

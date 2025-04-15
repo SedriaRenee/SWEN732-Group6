@@ -15,7 +15,7 @@ export default function LocationPage({
 
   return (
     <div>
-      <div className="min-h-screen font-[family-name:var(--font-geist-sans)]">
+      <div className="min-h-screen bg-gray-800 p-8 flex flex-col gap-4">
         <h1 className="text-white text-xl font-black">
           {location.name} ({location.type})
         </h1>

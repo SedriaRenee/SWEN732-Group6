@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from "@/lib/db";
 
-const prisma = new PrismaClient();
 
 export interface User {
   id?: number;
@@ -18,6 +17,19 @@ export async function createUser(
   firstName: string,
   lastName: string
 ) {
+  // Check if the user already exists
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email },
+        { username },
+      ],
+    },
+  });
+  if (existingUser) {
+    return null;
+  }
+
   return prisma.user.create({
     data: {
       email,
@@ -29,10 +41,22 @@ export async function createUser(
   });
 }
 
-export async function findUserByEmail(email: string) {
+export async function searchUserEmail(email: string) {
   return prisma.user.findUnique({ where: { email } });
 }
 
-export async function findUserByUsername(username: string) {
+export async function getUser(id: number) {
+  return await prisma.user.findUnique({ where: { id } });
+}
+
+export async function searchUsername(username: string) {
   return prisma.user.findUnique({ where: { username } });
+}
+
+export async function deleteUser(id: number) {
+  const user = await getUser(id);
+  if (!user) {
+    return null;
+  }
+  return prisma.user.delete({ where: { id } });
 }
