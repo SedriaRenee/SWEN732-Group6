@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { decrypt } from './lib/session'
-
-// Routes that do not require authentication
-const publicRoutes = ['/login', '/signup']; 
-
-const home = "/";
-const login = "/login";
+import { homeRoute, loginRoute, publicRoutes } from './constants'
 
 
 /*** Middleware Function
@@ -29,7 +24,7 @@ export default async function middleware(req: NextRequest) {
 
   // Redirect to login if user is not authenticated
   if (!isPublicRoute && !session?.userId) {
-    return NextResponse.redirect(new URL(login, req.nextUrl))
+    return NextResponse.redirect(new URL(loginRoute, req.nextUrl))
   }
  
   // Redict to home if the user is authenticated
@@ -37,7 +32,7 @@ export default async function middleware(req: NextRequest) {
     isPublicRoute &&
     session?.userId
   ) {
-    return NextResponse.redirect(new URL(home, req.nextUrl))
+    return NextResponse.redirect(new URL(homeRoute, req.nextUrl))
   }
   return NextResponse.next()
 }
