@@ -5,13 +5,13 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": false,
+    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node", // Changed to "node" for better compatibility
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "preserve", // use "react-jsx" if on React 17+
     "incremental": true,
     "plugins": [
       {
@@ -21,8 +21,19 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["./node_modules/@types", "node"],
+    "types": ["vitest"],
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/**/*.ts", "bcrypt-test.mts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "__tests__"
+  ],
   "exclude": ["node_modules"]
 }

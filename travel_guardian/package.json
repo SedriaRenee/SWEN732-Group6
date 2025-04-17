@@ -7,32 +7,28 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-
     "@heroui/react": "^2.7.5",
     "@prisma/client": "^6.5.0",
-
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/nodemailer": "^6.4.17",
     "@vitejs/plugin-react": "^4.3.4",
     "bcryptjs": "^3.0.2",
-
     "date-fns": "^4.1.0",
     "formidable": "^3.5.2",
+    "jose": "^6.0.10",
     "next": "^15.3.0",
     "nodemailer": "^6.10.0",
-    "jose": "^6.0.10",
-
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-modal": "^3.16.3",
     "travel_guardian": "file:",
     "uuid": "^11.1.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.7",
     "vitest-mock-extended": "^3.0.1"
   },
   "devDependencies": {
@@ -40,18 +36,22 @@
     "@testing-library/dom": "^10.4.0",
     "@types/bcrypt": "^5.0.2",
     "@types/formidable": "^3.4.5",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.17.30",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
     "@types/react-modal": "^3.16.3",
+    "@vitest/ui": "^3.1.1",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "jsdom": "^26.0.0",
+    "node-mocks-http": "^1.16.2",
     "postcss": "^8",
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^3.1.1"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",

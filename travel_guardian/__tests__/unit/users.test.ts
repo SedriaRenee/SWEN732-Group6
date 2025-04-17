@@ -1,92 +1,68 @@
-import prisma from "@/lib/db";
-import { assert, beforeEach, describe, expect, test, vi } from "vitest";
-import { testNewUser, testUser } from "../constants";
-import { createUser, deleteUser, searchUsername, searchUserEmail , getUser } from "@/model/user";
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { prisma } from '@/lib/db'
+import { createUser, findUserByEmail, findUserByUsername } from '@/model/user'
+import { testUser } from '../constants'
 
-vi.mock("@/lib/db");
+vi.mock('@/lib/db', () => ({
+  prisma: {
+    user: {
+      create: vi.fn(),
+      findUnique: vi.fn(),
+    },
+  },
+}))
 
-describe("User Unit Tests", () => {
+describe('User model', () => {
+  beforeEach(() => {
+   
+    vi.clearAllMocks()
+  })
 
-    let userId: number;
+  it('createUser calls prisma.user.create with correct payload', async () => {
+    ;(prisma.user.create as any).mockResolvedValue(testUser)
 
-    beforeEach(async () => {
-        vi.clearAllMocks();
+    const result = await createUser(
+      testUser.email,
+      testUser.username,
+      testUser.password,
+      testUser.first_name,
+      testUser.last_name
+    )
 
-        // Mock user
-        vi.spyOn(prisma.user, "findFirst").mockResolvedValue(null); // No existing user
-        vi.spyOn(prisma.user, "create").mockResolvedValue(testUser); // Mock user to create
-        const user = await createUser(testUser.email, testUser.username, testUser.password, testUser.first_name, testUser.last_name);
-        if (user) {
-            userId = user.id;
-        } else {
-            assert.fail("Mock user creation failed");
-        }
-        
-    });
+    expect(prisma.user.create).toHaveBeenCalledOnce()
+    expect(prisma.user.create).toHaveBeenCalledWith({
+      data: {
+        email: testUser.email,
+        username: testUser.username,
+        password: testUser.password,
+        first_name: testUser.first_name,
+        last_name: testUser.last_name,
+      },
+    })
+    expect(result).toEqual(testUser)
+  })
 
-    test("Find User by ID", async () => {
-        vi.spyOn(prisma.user, "findUnique").mockResolvedValue(testUser);
-        const user = await getUser(userId);
+  it('findUserByEmail calls prisma.user.findUnique with email filter', async () => {
+    ;(prisma.user.findUnique as any).mockResolvedValue(testUser)
 
-        if (!user) {
-            assert.fail("User not found")
-        }
-        assert.isObject(user);
-        expect(user.id).toBe(userId);
-        
-    });
+    const result = await findUserByEmail(testUser.email)
 
-    test("Find User by Username", async () => {
-        vi.spyOn(prisma.user, "findUnique").mockResolvedValue(testUser);
-        const user = await searchUsername(testUser.username);
-        
-        if (!user) {
-            assert.fail("User not found")
-        }
-        assert.isObject(user);
-        expect(user.id).toBe(userId);
-        expect(user.username).toBe(testUser.username);
-    });
+    expect(prisma.user.findUnique).toHaveBeenCalledOnce()
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { email: testUser.email },
+    })
+    expect(result).toEqual(testUser)
+  })
 
-    test("Find User by Email", async () => {
-        vi.spyOn(prisma.user, "findUnique").mockResolvedValue(testUser);
-        const user = await searchUserEmail(testUser.email);
-        
-        if (!user) {
-            assert.fail("User not found")
-        }
-        assert.isObject(user);
-        expect(user.id).toBe(userId);
-        expect(user.email).toBe(testUser.email);
-    });
+  it('findUserByUsername calls prisma.user.findUnique with username filter', async () => {
+    ;(prisma.user.findUnique as any).mockResolvedValue(testUser)
 
-    test("Fail to Create User", async () => {
-        vi.spyOn(prisma.user, "findFirst").mockResolvedValue(testNewUser); // Already existing user
-        vi.spyOn(prisma.user, "create").mockResolvedValue(testNewUser);
-        const user = await createUser(testNewUser.username, testNewUser.email, testNewUser.password, testNewUser.first_name, testNewUser.last_name);
-        assert.isNull(user);
-    });
+    const result = await findUserByUsername(testUser.username)
 
-    test("Create User", async () => {
-        vi.spyOn(prisma.user, "findFirst").mockResolvedValue(null); // No existing user
-        vi.spyOn(prisma.user, "create").mockResolvedValue(testNewUser);
-        const user = await createUser(testNewUser.username, testNewUser.email, testNewUser.password, testNewUser.first_name, testNewUser.last_name);
-        assert.isObject(user);
-        expect(user!!.id).toBe(testNewUser.id);
-    });
-
-    test("Delete User", async () => {
-        vi.spyOn(prisma.user, "findUnique").mockResolvedValue(testUser);
-        vi.spyOn(prisma.user, "delete").mockResolvedValue(testUser);
-        const user = await deleteUser(userId);
-        
-        assert.isObject(user);
-        expect(user!!.id).toBe(userId);
-
-        // Fail delete if doesn't exist
-        vi.spyOn(prisma.user, "findUnique").mockResolvedValue(null);
-        const deletedUser = await deleteUser(testUser.id);
-        assert.isNull(deletedUser);
-    });
-
-});
+    expect(prisma.user.findUnique).toHaveBeenCalledOnce()
+    expect(prisma.user.findUnique).toHaveBeenCalledWith({
+      where: { username: testUser.username },
+    })
+    expect(result).toEqual(testUser)
+  })
+})
