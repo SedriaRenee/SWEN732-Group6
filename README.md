@@ -45,3 +45,7 @@ Populates the database with locations with Python and Prisma.
 
 
 Generated site favicon with https://favicon.io/favicon-generator/
+
+
+### Badge
+
