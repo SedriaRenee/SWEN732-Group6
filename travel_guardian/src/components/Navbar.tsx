@@ -1,26 +1,35 @@
-'use client';
-import { deleteSession } from '@/lib/session';
-import { LocationResult, searchLocation } from '@/model/location';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import React, { JSX, useEffect, useState } from 'react';
+"use client";
+import { deleteSession, getSession } from "@/lib/session";
+import { LocationResult, searchLocation } from "@/model/location";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import React, { JSX, useEffect, useState } from "react";
 
 export default function Navbar() {
-  const [name, setName] = useState('');
-  const [lastSearch, setLastSearch] = useState('');
+  const [name, setName] = useState("");
+  const [lastSearch, setLastSearch] = useState("");
   const [locations, setLocations] = useState<LocationResult[]>([]);
   const [noResults, setNoResults] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  
+  const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
+
+    async function fetchSession() {
+      const session = await getSession();
+      setSession(session);
+    }
+    fetchSession();
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as Element).closest('.search-results')) {
+      if (!(event.target as Element).closest(".search-results")) {
         setShowResults(false);
       }
     };
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [locations]);
 
@@ -35,7 +44,7 @@ export default function Navbar() {
 
   async function logout() {
     await deleteSession();
-    redirect('/login');
+    redirect("/login");
   }
 
   let searchResult: JSX.Element = <div />;
@@ -43,14 +52,18 @@ export default function Navbar() {
     searchResult = (
       <div
         className="absolute bg-gray-900 top-10 left-0 p-4 rounded-lg shadow-lg"
-        style={{ display: showResults ? 'block' : 'none' }}
+        style={{ display: showResults ? "block" : "none" }}
       >
         <h5 className="text-bold">
           {locations.length} search results for {lastSearch}:
         </h5>
         {locations.map((loc) => {
           return (
-            <div key={loc.id} className="flex flex-col gap-2" data-testid="location">
+            <div
+              key={loc.id}
+              className="flex flex-col gap-2"
+              data-testid="location"
+            >
               <a
                 className="text-blue-300 text-bold py-1"
                 href={`/location/${loc.id}`}
@@ -68,7 +81,7 @@ export default function Navbar() {
     searchResult = (
       <div
         className="absolute bg-gray-900 top-10 left-0 p-4 rounded-lg shadow-lg"
-        style={{ display: showResults ? 'block' : 'none' }}
+        style={{ display: showResults ? "block" : "none" }}
       >
         <p className="font-bold text-red">No results found</p>
       </div>
@@ -106,7 +119,10 @@ export default function Navbar() {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           />
         </form>
-        <button onClick={() => logout()}> Sign out </button>
+        <div className="flex flex-col items-end">
+          <Link href={`/profile/${session ? session.userId : -1}`}>Hello, {session ? session.username: ""}</Link>
+          <button onClick={() => logout()}> Sign out </button>
+        </div>
       </div>
     </nav>
   );
