@@ -25,7 +25,7 @@ export default function RootLayout({
   const pathname = usePathname(); 
 
   // Hide navbar on login and signup pages
-  const hideNavbar = pathname === "/login" || pathname === "/signup";
+  const hideNavbar = pathname === "/login" || pathname === "/signup" || pathname === "/forgotpassword" || pathname === "/forgotusername"|| pathname === "/reset-password";
 
   return (
     <html lang="en">

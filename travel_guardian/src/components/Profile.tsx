@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; 
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 
 interface Profile {
@@ -15,22 +15,36 @@ interface Profile {
   description: string;
 }
 
-export default function Profile() {
-  const { username } = useParams(); 
+interface ProfileProps {
+  username?: string;
+}
+
+export default function ProfilePage({ username }: ProfileProps) {
+  const params = useParams<{ username: string }>();
+  const router = useRouter();
+
+  const effectiveUsername = username || params?.username;
+
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isEditing, setIsEditing] = useState(false); 
-  const router = useRouter(); 
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`/api/profile/${username}`)
+    if (!effectiveUsername) return;
+
+    fetch(`/api/profile/${effectiveUsername}`)
       .then((res) => res.json())
-      .then((data) => setProfile(data))
+      .then((data) => {
+        setProfile({
+          ...data,
+          placesVisited: Array.isArray(data.placesVisited) ? data.placesVisited : [],
+          placesToVisit: Array.isArray(data.placesToVisit) ? data.placesToVisit : [],
+        });
+      })
       .catch(() => console.error("Error fetching profile"));
-  }, [username]);
+  }, [effectiveUsername]);
 
   const handleEditRedirect = () => {
-    // Redirect to the edit page
-    router.push(`/profile/${username}/edit`);
+    router.push(`/profile/${effectiveUsername}/edit`);
   };
 
   if (!profile) return <p>Loading...</p>;
@@ -47,7 +61,7 @@ export default function Profile() {
         />
         <h2 className="mt-4 text-2xl font-bold">{profile.username}</h2>
         <button
-          onClick={handleEditRedirect} // Redirect to edit page
+          onClick={handleEditRedirect}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
         >
           Edit Profile
@@ -60,9 +74,14 @@ export default function Profile() {
         <p><span className="font-bold">Name:</span> {profile.name || "N/A"}</p>
         <p><span className="font-bold">Age:</span> {profile.age || "N/A"}</p>
         <p><span className="font-bold">Hometown:</span> {profile.hometown || "N/A"}</p>
-        <p><span className="font-bold">Places Visited:</span> {(profile.placesVisited ?? []).join(", ") || "None"}</p>
-        <p><span className="font-bold">Places to Visit:</span> {(profile.placesToVisit ?? []).join(", ") || "None"}</p>
-
+        <p>
+          <span className="font-bold">Places Visited:</span>{" "}
+          {profile.placesVisited.length > 0 ? profile.placesVisited.join(", ") : "None"}
+        </p>
+        <p>
+          <span className="font-bold">Places to Visit:</span>{" "}
+          {profile.placesToVisit.length > 0 ? profile.placesToVisit.join(", ") : "None"}
+        </p>
       </div>
     </div>
   );

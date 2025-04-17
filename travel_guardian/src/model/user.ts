@@ -1,15 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-export interface User {
-  id?: number;
-  email: string;
-  username: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-}
+import { prisma } from "@/lib/db"; 
 
 export async function createUser(
   email: string,
@@ -30,9 +19,13 @@ export async function createUser(
 }
 
 export async function findUserByEmail(email: string) {
-  return prisma.user.findUnique({ where: { email } });
+  return prisma.user.findUnique({
+    where: { email },
+  });
 }
 
 export async function findUserByUsername(username: string) {
-  return prisma.user.findUnique({ where: { username } });
+  return prisma.user.findUnique({
+    where: { username },
+  });
 }

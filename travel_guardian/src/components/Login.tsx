@@ -15,20 +15,22 @@ export default function Login() {
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ identifier, password }), 
+      body: JSON.stringify({ identifier, password }),
     });
 
     if (res.ok) {
-      const { user } = await res.json();
+      const { user, token } = await res.json();
       localStorage.setItem("username", user.username);
-      router.push(`/profile/${user.username}`); 
+      localStorage.setItem("token", token);
+      router.push(`/profile/${user.username}`);
     } else {
       setError("Invalid credentials. Please try again.");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
+      <h1 className="text-4xl font-bold mb-8">Travel Guardian</h1>
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
         
@@ -57,10 +59,15 @@ export default function Login() {
           Login
         </button>
 
-       
         <div className="mt-4 text-center">
-          <a href="/forgot-password" className="text-blue-600 text-sm hover:underline">
+          <a href="/forgotpassword" className="text-blue-600 text-sm hover:underline">
             Forgot password?
+          </a>
+        </div>
+
+        <div className="mt-2 text-center">
+          <a href="/forgotusername" className="text-blue-600 text-sm hover:underline">
+            Forgot username?
           </a>
         </div>
 

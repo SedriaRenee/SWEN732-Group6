@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
-  const isAuthenticated = false; // Replace this with your actual auth check
+  const isAuthenticated = false; 
 
   useEffect(() => {
     if (!isAuthenticated) {

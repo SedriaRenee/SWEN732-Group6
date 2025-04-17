@@ -1,6 +1,9 @@
 "use server";
+
+
 import { getPrisma } from "@/lib/db";
-import { location, Prisma } from "@prisma/client";
+import { Prisma, Location } from "@prisma/client";
+
 
 export async function searchLocation(name: string): Promise<LocationResult[]> {
     const client = await getPrisma();
@@ -14,6 +17,7 @@ export async function getLocation(id: number): Promise<FullLocation | null> {
 }
 
 export async function getCountries(): Promise<location[]> {
+
     const client = await getPrisma();
     return client.location.findMany({ where: { type: "country" } });
 }
@@ -34,7 +38,3 @@ export type FullLocation = Prisma.locationGetPayload<{
     };
 }>;
 
-// Function for comparing location names 
-export function normalizeLocation(name: string): string {
-    return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-}

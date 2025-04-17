@@ -1,11 +1,18 @@
-'use server';
 import { PrismaClient } from '@prisma/client';
 
-let prismaClient: PrismaClient | undefined;
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
-export async function getPrisma() {
-  if (!prismaClient) {
-    prismaClient = new PrismaClient();
-  }
-  return prismaClient;
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ['query'],
+  });
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
 }
+
+export const getPrisma = () => prisma; // ✅
+

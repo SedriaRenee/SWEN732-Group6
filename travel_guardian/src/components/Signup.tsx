@@ -104,7 +104,6 @@ export default function Signup() {
         </a>
       </p>
 
-      {/* Success Modal */}
       {success && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg text-center">
