@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
 export default function Home() {
   const router = useRouter();
   const isAuthenticated = false; 
@@ -20,7 +17,9 @@ export default function Home() {
         <p className="text-white text-xl">Find up-to-date travel guidelines for any city in the world!</p>
 
         <div className="text-center flex flex-col w-full">
-          <a className="text-blue-500 text-bold text-2xl p-0" href="/countries">Browse countries</a>
+          <a className="text-blue-500 text-bold text-2xl p-0" href="/countries">
+            Browse countries
+          </a>
           <p className="text-xl font-black p-0">OR</p>
           <p className="text-white text-2xl text-bold p-0">Search for your travel destination</p>
         </div>

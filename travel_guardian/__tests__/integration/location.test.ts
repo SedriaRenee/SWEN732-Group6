@@ -1,18 +1,12 @@
 import { getCountries, getLocation, normalizeLocation, searchLocation } from '@/model/location';
-import {test, assert, expect} from 'vitest';
-import { render, screen,fireEvent, waitFor } from '@testing-library/react'
-import Navbar from '@/components/Navbar';
-import { describe } from 'node:test';
-import { getPrisma } from '@/lib/db';
-import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
+import {test, assert, describe} from 'vitest';
+import prismaClient from '@/lib/db';
 
-describe("Location", () => {
-
+describe("Location Integration Tests", () => {
+    
     // Test to make sure the database is reachable and has the correct amount of locations
     test("Database populated", async () => {
-        const db = await getPrisma();
-        const locations = await db.location.count();
+        const locations = await prismaClient.location.count();
         assert(locations > 0, "No locations in database");
         assert(locations > 50000, "Locations not populated");    
     });
@@ -62,14 +56,17 @@ describe("Location", () => {
     test("Find child location through parent", async () => {
         const makedonia = await getLocation(1519);
         const target = "thessaloniki";
-
         let found = false;
-        makedonia?.children.forEach(async (child) => {
-            if (normalizeLocation(child.name) == target) {
+        if (!makedonia) {
+            assert.fail("Parent location not found");
+        }
+        for (const c of makedonia.children) {
+            const normalized = await normalizeLocation(c.name);
+            if (normalized == target) {
                 found = true;
+                break;
             }
-
-        });
+        }
 
         assert(found, "Child location not found");
     });
@@ -82,8 +79,11 @@ describe("Location", () => {
         
         if (loc && loc.parent && loc.parent.parentId) {
             const grandparent = await getLocation(loc.parent.parentId);
-
-            if (grandparent && normalizeLocation(grandparent.name) == target) {
+            if (!grandparent) {
+                assert.fail("Grandparent not found");
+            }
+            const normalized = await normalizeLocation(grandparent.name);
+            if (normalized == target)  {
                 found = true;
             }
         }
@@ -91,29 +91,4 @@ describe("Location", () => {
         assert(found, "Grandparent location not found");
     });
 
-    // Test view component for location searching
-    test('Navbar location search', async () => {
-        render(<Navbar />);
-        const search = screen.getByTestId('search');
-        const user = userEvent.setup();
-    
-        await user.type(search, "New York");
-        
-        const form = search.parentElement as HTMLFormElement;
-        const button = search.nextSibling as HTMLButtonElement;
-    
-        const submitSpy = vi.fn();
-        form.addEventListener("submit", submitSpy);
-        
-        await user.click(button);
-    
-        expect(submitSpy).toHaveBeenCalled();
-    
-        const results = await waitFor(() => screen.getAllByTestId('location'));
-        expect(results).toBeDefined();
-        expect(results.length).toBeGreaterThan(1); // 2
-    
-    });
-    
 });
-

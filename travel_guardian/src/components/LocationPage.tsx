@@ -3,6 +3,7 @@ import Reports from '@/components/Reports';
 import { FullLocation } from '@/model/location';
 import Link from 'next/link';
 import { useState } from 'react';
+import Discussion from "@/components/Discussion";
 
 export default function LocationPage({
   location,
@@ -14,7 +15,7 @@ export default function LocationPage({
 
   return (
     <div>
-      <div>
+      <div className="min-h-screen bg-gray-800 p-8 flex flex-col gap-4">
         <h1 className="text-white text-xl font-black">
           {location.name} ({location.type})
         </h1>
@@ -71,6 +72,7 @@ export default function LocationPage({
         )}
 
         <Reports locationId={location.id} />
+        <Discussion locationId={location.id} />
       </div>
     </div>
   );

@@ -10,24 +10,30 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0",
+
+    "@heroui/react": "^2.7.5",
+    "@prisma/client": "^6.5.0",
+
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/nodemailer": "^6.4.17",
     "@vitejs/plugin-react": "^4.3.4",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
+
     "date-fns": "^4.1.0",
     "formidable": "^3.5.2",
     "next": "^15.3.0",
     "nodemailer": "^6.10.0",
+    "jose": "^6.0.10",
+
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-modal": "^3.16.3",
     "travel_guardian": "file:",
     "uuid": "^11.1.0",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.7"
+    "vitest": "^3.0.7",
+    "vitest-mock-extended": "^3.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -1,13 +1,23 @@
 "use server";
-import { getPrisma } from "@/lib/db";
+import prisma from "@/lib/db";
 import { report } from "@prisma/client";
 
 export async function getReports(locationId: number): Promise<report[]> {
-    const client = await getPrisma();
-    return client.report.findMany({ where: { locId: locationId } });
+    return prisma.report.findMany({ where: { locId: locationId } });
 }
 
-export async function createReport(name: string, desc: string, locationId: number): Promise<report> {
-    const client = await getPrisma();
-    return client.report.create({ data: { name, desc, locId: locationId } });
+export async function createReport(name: string, desc: string, locationId: number, tag: string=""): Promise<report> {
+    return prisma.report.create({ data: { name, desc, locId: locationId, tag } });
+}
+
+export async function searchReport(keyword: string) : Promise<report[] | null> { 
+    return prisma.report.findMany({where: {tag: keyword}});
+}
+
+export async function deleteReport(reportId: number) {
+    return prisma.report.delete({where:{id:reportId}});    
+}
+
+export async function findByTag(tag: string) {
+    return prisma.report.findMany({ where: { tag } });
 }

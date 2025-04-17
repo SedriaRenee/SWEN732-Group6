@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { registerUser } from "@/lib/auth";
+import { createSession } from "@/lib/session";
 
 export async function POST(req: Request) {
   try {
@@ -9,6 +10,7 @@ export async function POST(req: Request) {
     const { email, username, password, firstName, lastName } = body;
     const user = await registerUser(email, username, password, firstName, lastName);
 
+    await createSession(user.id, user.username);
     
     return NextResponse.json({ message: "Signup successful", user }, { status: 201 });
 

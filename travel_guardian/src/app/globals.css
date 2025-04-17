@@ -20,10 +20,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-*:hover,
-*:active,
-*:focus {
+*:focus-visible {
   outline: none !important;
-  border: none !important;
-  box-shadow: none !important;
 }

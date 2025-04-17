@@ -14,5 +14,5 @@ if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
-export const getPrisma = () => prisma; // ✅
+export const getPrisma = () => prisma; // 
 

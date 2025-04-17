@@ -1,7 +1,7 @@
 generator py {
   provider                    = "prisma-client-py"
-  enable_experimental_decimal = "true"
   recursive_type_depth        = "5"
+  enable_experimental_decimal = "true"
 }
 
 datasource db {
@@ -30,4 +30,43 @@ model report {
   created  DateTime @default(now())
   locId    Int
   location location @relation(fields: [locId], references: [id])
+}
+
+model discussions {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  creatorId  Int
+  users      users    @relation(fields: [creatorId], references: [id])
+  reply      reply[]
+}
+
+model reply {
+  id           Int          @id @default(autoincrement())
+  content      String       @db.VarChar(400)
+  created_at   DateTime     @default(now())
+  creatorId    Int
+  discussionId Int?
+  parentId     Int?
+  users        users        @relation(fields: [creatorId], references: [id])
+  discussions  discussions? @relation(fields: [discussionId], references: [id])
+  reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
+  other_reply  reply[]      @relation("replyToreply")
+}
+
+model users {
+  id          Int           @id @default(autoincrement())
+  username    String        @db.VarChar(255)
+  email       String        @db.VarChar(255)
+  type        user_type
+  password    String        @db.VarChar(255)
+  first_name  String        @db.VarChar(400)
+  last_name   String        @db.VarChar(400)
+  discussions discussions[]
+  reply       reply[]
+}
+
+enum user_type {
+  travler
+  local
 }

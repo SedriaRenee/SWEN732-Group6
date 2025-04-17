@@ -1,6 +1,8 @@
 'use client';
+import { deleteSession } from '@/lib/session';
 import { LocationResult, searchLocation } from '@/model/location';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import React, { JSX, useEffect, useState } from 'react';
 
 export default function Navbar() {
@@ -29,6 +31,11 @@ export default function Navbar() {
     setLocations(res);
     setShowResults(true);
     setNoResults(res.length == 0);
+  }
+
+  async function logout() {
+    await deleteSession();
+    redirect('/login');
   }
 
   let searchResult: JSX.Element = <div />;
@@ -99,6 +106,7 @@ export default function Navbar() {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           />
         </form>
+        <button onClick={() => logout()}> Sign out </button>
       </div>
     </nav>
   );
