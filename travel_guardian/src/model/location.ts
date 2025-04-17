@@ -1,4 +1,5 @@
 "use server";
+
 import prisma from "@/lib/db";
 import { location, Prisma } from "@prisma/client";
 
@@ -20,6 +21,7 @@ export async function removeLocation(id: number): Promise<location | null> {
 }
 
 export async function getCountries(): Promise<location[]> {
+
     return prisma.location.findMany({ where: { type: "country" } });
 }
 
@@ -42,6 +44,7 @@ export async function createLocation(name: string, parentName: string): Promise<
     }
 
     return prisma.location.create({ data: { name, type: "city", lat: "0", lon: "0", parentId: null } });
+
 }
 
 // Location model that includes only the immediate parent name, and basic location info. Used for searching
@@ -64,3 +67,4 @@ export type FullLocation = Prisma.locationGetPayload<{
 export async function normalizeLocation(name: string): Promise<string> {
     return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
+

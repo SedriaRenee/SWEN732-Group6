@@ -42,6 +42,10 @@ model user {
   discussions discussions[]
   reply       reply[]
   profile     profile?      @relation("UserProfile")
+  sessions    session[]
+  resetToken  String?       @db.VarChar(255)
+  resetTokenExpiry DateTime?
+
 }
 
 model discussions {
@@ -86,3 +90,16 @@ enum user_type {
   travler
   local
 }
+
+model session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      user     @relation(fields: [userId], references: [id])
+  token     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime
+
+  @@index([userId])
+}
+
