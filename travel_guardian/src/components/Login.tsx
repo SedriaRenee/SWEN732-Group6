@@ -22,6 +22,7 @@ export default function Login() {
       const { user, token } = await res.json();
       localStorage.setItem("username", user.username);
       localStorage.setItem("token", token);
+      localStorage.setItem("userID", user.id);
       router.push(`/profile/${user.username}`);
     } else {
       setError("Invalid credentials. Please try again.");
@@ -33,7 +34,7 @@ export default function Login() {
       <h1 className="text-4xl font-bold mb-8">Travel Guardian</h1>
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-        
+
         {error && <p className="text-red-500 text-center">{error}</p>}
 
         <input

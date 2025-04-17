@@ -12,7 +12,8 @@ type Props = {
 export default function Discussion(props: Props) {
     const [createModal, setCreateModal] = useState(false);
     const [discussionsList, setDiscussionsList] = useState<discussions[]>([]);
-
+    const storedValue = localStorage.getItem("userID");
+    const userID = storedValue ? parseInt(storedValue) : 0;
     function closeModal() {
         setCreateModal(false);
         getAllDiscussions(props.locationId).then(
@@ -30,7 +31,7 @@ export default function Discussion(props: Props) {
         <div>
             <Modal isOpen={createModal} onClose={() => setCreateModal(false)} className="bg-[#111111BB]">
                 <ModalContent className="fixed  bg-[#222222] p-8 rounded-lg shadow-lg" style={{ maxWidth: '600px', margin: 'auto' }}>
-                    <CreateDiscus locationId={props.locationId} close={closeModal} userId={1} />
+                    <CreateDiscus locationId={props.locationId} close={closeModal} userId={userID} />
                 </ModalContent>
             </Modal>
             <div className="flex flex-row justify-between items-center my-4">
