@@ -10,15 +10,18 @@ datasource db {
 }
 
 model location {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(255)
-  lat      String     @db.VarChar(15)
-  lon      String     @db.VarChar(15)
-  type     String     @db.VarChar(15)
-  parentId Int?
-  parent   location?  @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children location[] @relation("LocationToLocation")
-  report   report[]
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(255)
+  lat          String        @db.VarChar(15)
+  lon          String        @db.VarChar(15)
+  type         String        @db.VarChar(15)
+  parentId     Int?
+  alert_status String
+  discussions  discussions[]
+  guideline    guideline[]
+  parent       location?     @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children     location[]    @relation("LocationToLocation")
+  report       report[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
@@ -29,6 +32,7 @@ model report {
   desc     String
   created  DateTime @default(now())
   locId    Int
+  tag      String?  @default("NO-RISK") @db.VarChar(20)
   location location @relation(fields: [locId], references: [id])
 }
 
@@ -37,7 +41,10 @@ model discussions {
   title      String   @db.VarChar(400)
   created_at DateTime @default(now())
   creatorId  Int
-  users      users    @relation(fields: [creatorId], references: [id])
+  locationId Int
+  content    String   @db.VarChar(400)
+  users      user     @relation(fields: [creatorId], references: [id])
+  location   location @relation(fields: [locationId], references: [id])
   reply      reply[]
 }
 
@@ -48,22 +55,60 @@ model reply {
   creatorId    Int
   discussionId Int?
   parentId     Int?
-  users        users        @relation(fields: [creatorId], references: [id])
+  users        user         @relation(fields: [creatorId], references: [id])
   discussions  discussions? @relation(fields: [discussionId], references: [id])
   reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
   other_reply  reply[]      @relation("replyToreply")
 }
 
-model users {
-  id          Int           @id @default(autoincrement())
-  username    String        @db.VarChar(255)
-  email       String        @db.VarChar(255)
-  type        user_type
-  password    String        @db.VarChar(255)
-  first_name  String        @db.VarChar(400)
-  last_name   String        @db.VarChar(400)
-  discussions discussions[]
-  reply       reply[]
+model guideline {
+  id               Int      @id @default(autoincrement())
+  locId            Int
+  note             String
+  tags             String[]
+  public_timestamp DateTime
+  title            String
+  location         location @relation(fields: [locId], references: [id])
+}
+
+model profile {
+  id            String   @id
+  userId        Int      @unique
+  profilePic    String?
+  name          String?
+  age           Int?
+  hometown      String?
+  placesVisited String[]
+  placesToVisit String[]
+  description   String   @db.VarChar(400)
+  user          user     @relation(fields: [userId], references: [id])
+}
+
+model session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  expiresAt DateTime
+  user      user     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model user {
+  id               Int           @id @default(autoincrement())
+  username         String        @unique @db.VarChar(255)
+  email            String        @unique @db.VarChar(255)
+  password         String        @db.VarChar(255)
+  first_name       String        @db.VarChar(400)
+  last_name        String        @db.VarChar(400)
+  resetToken       String?       @db.VarChar(255)
+  resetTokenExpiry DateTime?
+  discussions      discussions[]
+  profile          profile?
+  reply            reply[]
+  session          session[]
 }
 
 enum user_type {

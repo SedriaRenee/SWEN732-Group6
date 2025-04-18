@@ -25,6 +25,7 @@ model guideline {
   note             String
   tags             String[]
   public_timestamp DateTime
+  title            String
   location         location @relation(fields: [locId], references: [id])
 }
 
@@ -35,6 +36,7 @@ model location {
   lon            String        @db.VarChar(15)
   type           String        @db.VarChar(15)
   parentId       Int?
+  alert_status   String
   discussions    discussions[]
   guideline      guideline[]
   location       location?     @relation("locationTolocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
