@@ -33,19 +33,18 @@ model report {
 }
 
 model user {
-  id          Int           @id @default(autoincrement())
-  username    String        @unique @db.VarChar(255)
-  email       String        @unique @db.VarChar(255)
-  password    String        @db.VarChar(255)
-  first_name  String        @db.VarChar(400)
-  last_name   String        @db.VarChar(400)
-  discussions discussions[]
-  reply       reply[]
-  profile     profile?      @relation("UserProfile")
-  sessions    session[]
-  resetToken  String?       @db.VarChar(255)
+  id               Int           @id @default(autoincrement())
+  username         String        @unique @db.VarChar(255)
+  email            String        @unique @db.VarChar(255)
+  password         String        @db.VarChar(255)
+  first_name       String        @db.VarChar(400)
+  last_name        String        @db.VarChar(400)
+  resetToken       String?       @db.VarChar(255)
   resetTokenExpiry DateTime?
-
+  discussions      discussions[]
+  profile          profile?      @relation("UserProfile")
+  reply            reply[]
+  sessions         session[]
 }
 
 model discussions {
@@ -76,7 +75,6 @@ model reply {
 model profile {
   id            String   @id @default(uuid())
   userId        Int      @unique
-  user          user     @relation("UserProfile", fields: [userId], references: [id])
   profilePic    String?
   name          String?
   age           Int?
@@ -84,22 +82,22 @@ model profile {
   placesVisited String[]
   placesToVisit String[]
   description   String   @db.VarChar(400)
+  user          user     @relation("UserProfile", fields: [userId], references: [id])
+}
+
+model session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime
+  user      user     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 enum user_type {
   travler
   local
 }
-
-model session {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      user     @relation(fields: [userId], references: [id])
-  token     String   @unique @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  expiresAt DateTime
-
-  @@index([userId])
-}
-

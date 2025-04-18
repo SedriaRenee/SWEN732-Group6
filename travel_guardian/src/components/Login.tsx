@@ -20,10 +20,26 @@ export default function Login() {
 
     if (res.ok) {
       const { user, token } = await res.json();
-      localStorage.setItem("username", user.username);
-      localStorage.setItem("token", token);
+
+      // Debugging: Check the response data
+      console.log("Login Successful:");
+      console.log("User:", user);
+      console.log("Token:", token);
+
+      if (typeof window !== "undefined") {
+        // Debugging: Check if localStorage is being set correctly
+        console.log("Setting localStorage...");
+        localStorage.setItem("username", user.username);
+        localStorage.setItem("token", token);
+      }
+
+      // Debugging: Check if router.push is called
+      console.log(`Redirecting to profile: /profile/${user.username}`);
       router.push(`/profile/${user.username}`);
     } else {
+      // Debugging: Check the error response
+      const errorData = await res.json();
+      console.log("Login failed:", errorData);
       setError("Invalid credentials. Please try again.");
     }
   };
