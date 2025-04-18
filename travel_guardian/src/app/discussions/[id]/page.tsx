@@ -11,7 +11,8 @@ export default function Discussion({ params }: { params: Promise<{ id: string }>
     const [discussion, setDiscussion] = useState<discussions | null>(null);
     const [replies, setReplies] = useState<reply[]>([]);
     const [loading, setLoading] = useState(true);
-    const userId = 1; // Temp
+    const storedValue = localStorage.getItem("userID");
+    const userId = storedValue ? parseInt(storedValue) : 0; // or another default
     const [discId, setDiscId] = useState<number | null>(null);
 
     useEffect(() => {
