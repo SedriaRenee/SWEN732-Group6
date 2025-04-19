@@ -9,7 +9,7 @@ import { Dropdown, DropdownItem, DropdownTrigger, DropdownMenu, Button } from "@
 
 export default function LocationPage({ location }: { location: FullLocation }) {
   const [filter, setFilter] = useState("");
-  const [selectedKeys, setSelectedKeys] = useState(new Set(["TAG"]));
+  const [selectedKeys, setSelectedKeys] = useState(new Set(["SEARCH BY TAG"]));
   const selectedValue = useMemo(
     () => Array.from(selectedKeys).join(", ").replace(/_/g, ""),
     [selectedKeys],
@@ -51,19 +51,40 @@ export default function LocationPage({ location }: { location: FullLocation }) {
     const newSelectedKeys = new Set(keys as Iterable<string>);
     setSelectedKeys(newSelectedKeys); // Update the state with the new selection
   };
-
+  // Function to retrieve a master list of SPECIFIC guidelines 
   function filterItems() { // by location TAG
-    console.log(selectedKeys); //  console.log("Search by High-Risk Reports or Location");
-//    console.log(guidelines.has(selectedKeys))
-    const IT = guidelines.entries();
-    for (const entry of IT) {
-      console.log(entry[1].id);
-      console.log(entry[1].title);
-      console.log(entry[1].tags);
-      console.log(entry[1].note);
+    console.log(selectedKeys); 
+    if (selectedValue == 'none') {
+      console.log('none was selected');      // reset guidelines to all shown??
+      return; 
     }
-    // console.log("Guidelines Title:", guidelines[1].title);
-    // console.log("Guidelines Note: ", guidelines[1].note);
+    
+    const IT = guidelines.entries();
+    
+    var allEntries = []; // return master list of specified entries
+
+    // HASH MAP to filter tag to tags of entry
+    const filterList = new Map([
+      ['none', ''], // redundant case should be cleared
+      ['general','general'],
+      ['requirements', 'Entry requirements'],
+      ['warning','Warnings'],
+      ['insurance', 'insurance']
+    ]);
+    
+    for (const entry of IT) {
+      // console.log(entry[1].id);
+      // console.log(entry[1].title);
+      // console.log(entry[1].note);
+      // console.log(entry[1].tags);
+      for (const item of entry[1].tags) {
+        if (filterList.get(selectedValue) == item) {
+          allEntries.push(entry[1]);
+        } 
+      }
+    }
+    console.log(allEntries);
+    return allEntries; // may need debugging 
   }
 
   useEffect(() => {
