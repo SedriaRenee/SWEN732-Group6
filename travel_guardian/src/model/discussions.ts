@@ -1,5 +1,5 @@
 "use server";
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import {discussions} from "@prisma/client";
 
 

@@ -2,7 +2,6 @@
 import { deleteSession, getSession } from "@/lib/session";
 import { LocationResult, searchLocation } from "@/model/location";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import React, { JSX, useEffect, useState } from "react";
 
 export default function Navbar() {
@@ -44,7 +43,6 @@ export default function Navbar() {
 
   async function logout() {
     await deleteSession();
-    redirect("/login");
   }
 
   let searchResult: JSX.Element = <div />;
@@ -120,7 +118,7 @@ export default function Navbar() {
           />
         </form>
         <div className="flex flex-col items-end">
-          <Link href={`/profile/${session ? session.userId : -1}`}>Hello, {session ? session.username: ""}</Link>
+          <Link href={`/profile/${session ? session.username : ""}`}>Hello, {session ? session.username: ""}</Link>
           <button onClick={() => logout()}> Sign out </button>
         </div>
       </div>

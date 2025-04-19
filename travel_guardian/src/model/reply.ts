@@ -1,5 +1,5 @@
 "use server";
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import {reply} from "@prisma/client";
 
 export async function getReplyHeads(discussionId: number): Promise<reply[]> {

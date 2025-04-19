@@ -4,10 +4,15 @@ import nodemailer from 'nodemailer';
 import crypto from 'crypto'; 
 import { addMinutes } from 'date-fns';
 
-
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    if (req.method !== 'POST') {
+      return NextResponse.json({ error: 'Method Not Allowed' }, { status: 405 });
+    }
+    if (!req.body) {
+      return NextResponse.json({ error: 'Request body is required' }, { status: 400 });
+    }
+    const body = req.body as any;
 
     if (!body?.email) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });

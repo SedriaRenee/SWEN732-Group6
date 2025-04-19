@@ -1,5 +1,5 @@
 "use server";
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { report } from "@prisma/client";
 
 export async function getReports(locationId: number): Promise<report[]> {

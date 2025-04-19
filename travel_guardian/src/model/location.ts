@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { location, Prisma } from "@prisma/client";
 
 export async function searchLocation(name: string): Promise<LocationResult[]> {

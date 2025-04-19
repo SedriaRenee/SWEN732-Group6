@@ -1,12 +1,12 @@
+import { prisma } from '@/lib/db';
 import { getCountries, getLocation, normalizeLocation, searchLocation } from '@/model/location';
 import {test, assert, describe} from 'vitest';
-import prismaClient from '@/lib/db';
 
 describe("Location Integration Tests", () => {
     
     // Test to make sure the database is reachable and has the correct amount of locations
     test("Database populated", async () => {
-        const locations = await prismaClient.location.count();
+        const locations = await prisma.location.count();
         assert(locations > 0, "No locations in database");
         assert(locations > 50000, "Locations not populated");    
     });
