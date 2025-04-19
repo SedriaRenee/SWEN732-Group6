@@ -2,12 +2,18 @@
 import Reports from "@/components/Reports";
 import { FullLocation, getGuidelines } from "@/model/location";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Discussion from "@/components/Discussion";
 import { guideline } from "@prisma/client";
+import { Dropdown, DropdownItem, DropdownTrigger, DropdownMenu, Button } from "@heroui/react";
 
 export default function LocationPage({ location }: { location: FullLocation }) {
   const [filter, setFilter] = useState("");
+  const [selectedKeys, setSelectedKeys] = useState(new Set(["TAG"]));
+  const selectedValue = useMemo(
+    () => Array.from(selectedKeys).join(", ").replace(/_/g, ""),
+    [selectedKeys],
+  );
   const sortedChildren = location.children.toSorted((a, b) =>
     a.name.localeCompare(b.name)
   );
@@ -41,13 +47,56 @@ export default function LocationPage({ location }: { location: FullLocation }) {
     setHometown(b);
   }
 
+  const handleSelectionChange = (keys: any) => {
+    const newSelectedKeys = new Set(keys as Iterable<string>);
+    setSelectedKeys(newSelectedKeys); // Update the state with the new selection
+  };
+
+  function filterItems() { // by location TAG
+    console.log(selectedKeys); //  console.log("Search by High-Risk Reports or Location");
+//    console.log(guidelines.has(selectedKeys))
+    const IT = guidelines.entries();
+    for (const entry of IT) {
+      console.log(entry[1].id);
+      console.log(entry[1].title);
+      console.log(entry[1].tags);
+      console.log(entry[1].note);
+    }
+    // console.log("Guidelines Title:", guidelines[1].title);
+    // console.log("Guidelines Note: ", guidelines[1].note);
+  }
+
+  useEffect(() => {
+    filterItems();
+  }, [selectedValue]); // if user changes tag
+
   return (
     <div>
       <div className="min-h-screen bg-gray-800 p-8 flex flex-col gap-4">
         <h1 className="text-white text-xl font-black">
           {location.name} ({location.type})
         </h1>
-
+        <Dropdown>
+              <DropdownTrigger>
+                <Button className="capitalize" variant="bordered">
+                  {selectedValue}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Single selection example"
+                selectedKeys={selectedKeys}
+                selectionMode="single"
+                variant="flat"
+                onSelectionChange={handleSelectionChange}
+              >
+                <DropdownItem key="none">NONE</DropdownItem>
+                <DropdownItem key="general">GENERAL</DropdownItem>
+                <DropdownItem key="requirements">PASSPORT</DropdownItem>
+                <DropdownItem key="warning">WARNING</DropdownItem>
+                <DropdownItem key="insurance">INSURANCE</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
         {location.parent && (
           <h3>
             in{" "}
@@ -68,7 +117,7 @@ export default function LocationPage({ location }: { location: FullLocation }) {
             >
               CONTAINS:
             </h3>
-            <form>
+            <form> 
               <input
                 type="text"
                 placeholder="Filter..."
