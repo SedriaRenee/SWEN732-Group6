@@ -5,14 +5,14 @@ from prisma import Prisma
 db = Prisma()
 
 def read_csv(file_path):
-    with open(file_path, mode='r') as file:
+    with open(file_path, mode='r',encoding="utf-8") as file:
         csv_reader = csv.reader(file)
         header = next(csv_reader)
         data = [row for row in csv_reader]
     return header, data
 
 async def create_location(name, lat="", lon="", parent=None, type="city"):
-    location = await db.location.create(data={"name": name, "lat": lat, "lon": lon, "parentId": parent, "type": type})
+    location = await db.location.create(data={"name": name, "lat": lat, "lon": lon, "parentId": parent, "type": type,"alert_status":"None"})
     return location.id
 
 countries = {}
