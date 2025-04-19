@@ -7,29 +7,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model discussions {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  creatorId  Int
+  locationId Int
+  content    String   @db.VarChar(400)
+  user       user     @relation(fields: [creatorId], references: [id])
+  location   location @relation(fields: [locationId], references: [id])
+  reply      reply[]
+}
+
+model guideline {
+  id               Int      @id @default(autoincrement())
+  locId            Int
+  note             String
+  tags             String[]
+  public_timestamp DateTime
+  title            String
+  location         location @relation(fields: [locId], references: [id])
+}
+
 model location {
-  id          Int           @id @default(autoincrement())
-  name        String        @db.VarChar(255)
-  lat         String        @db.VarChar(15)
-  lon         String        @db.VarChar(15)
-  type        String        @db.VarChar(15)
-  parentId    Int?
-  discussions discussions[]
-  parent      location?     @relation("LocationToLocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children    location[]    @relation("LocationToLocation")
-  reports     report[]
+  id             Int           @id @default(autoincrement())
+  name           String        @db.VarChar(255)
+  lat            String        @db.VarChar(15)
+  lon            String        @db.VarChar(15)
+  type           String        @db.VarChar(15)
+  parentId       Int?
+  alert_status   String
+  discussions    discussions[]
+  guideline      guideline[]
+  location       location?     @relation("locationTolocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_location location[]    @relation("locationTolocation")
+  report         report[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
 
+model profile {
+  id            String   @id
+  userId        Int      @unique
+  profilePic    String?
+  name          String?
+  age           Int?
+  hometown      String?
+  placesVisited String[]
+  placesToVisit String[]
+  description   String   @db.VarChar(400)
+  user          user     @relation(fields: [userId], references: [id])
+}
+
+model reply {
+  id           Int          @id @default(autoincrement())
+  content      String       @db.VarChar(400)
+  created_at   DateTime     @default(now())
+  creatorId    Int
+  discussionId Int?
+  parentId     Int?
+  user         user         @relation(fields: [creatorId], references: [id])
+  discussions  discussions? @relation(fields: [discussionId], references: [id])
+  reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
+  other_reply  reply[]      @relation("replyToreply")
+}
+
 model report {
-  id      Int      @id @default(autoincrement())
-  name    String   @db.VarChar(255)
-  desc    String
-  created DateTime @default(now())
-  locId   Int
-  tag     String?  @default("NO-RISK") @db.VarChar(20)
-  loc     location @relation(fields: [locId], references: [id])
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(255)
+  desc     String
+  created  DateTime @default(now())
+  locId    Int
+  tag      String?  @default("NO-RISK") @db.VarChar(20)
+  location location @relation(fields: [locId], references: [id])
+}
+
+model session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  expiresAt DateTime
+  user      user     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model user {
@@ -42,57 +104,12 @@ model user {
   resetToken       String?       @db.VarChar(255)
   resetTokenExpiry DateTime?
   discussions      discussions[]
-  profile          profile?      @relation("UserProfile")
+  profile          profile?
   reply            reply[]
-  sessions         session[]
+  session          session[]
 }
 
-model discussions {
-  id         Int      @id @default(autoincrement())
-  title      String   @db.VarChar(400)
-  created_at DateTime @default(now())
-  creatorId  Int
-  locationId Int
-  content    String   @db.VarChar(400)
-  users      user     @relation(fields: [creatorId], references: [id])
-  location   location @relation(fields: [locationId], references: [id])
-  reply      reply[]
-}
-
-model reply {
-  id           Int          @id @default(autoincrement())
-  content      String       @db.VarChar(400)
-  created_at   DateTime     @default(now())
-  creatorId    Int
-  discussionId Int?
-  parentId     Int?
-  users        user         @relation(fields: [creatorId], references: [id])
-  discussions  discussions? @relation(fields: [discussionId], references: [id])
-  reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
-  other_reply  reply[]      @relation("replyToreply")
-}
-
-model profile {
-  id            String   @id @default(uuid())
-  userId        Int      @unique
-  profilePic    String?
-  name          String?
-  age           Int?
-  hometown      String?
-  placesVisited String[]
-  placesToVisit String[]
-  description   String   @db.VarChar(400)
-  user          user     @relation("UserProfile", fields: [userId], references: [id])
-}
-
-model session {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  token     String   @unique @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  expiresAt DateTime
-  user      user     @relation(fields: [userId], references: [id])
-
-  @@index([userId])
+enum user_type {
+  travler
+  local
 }
