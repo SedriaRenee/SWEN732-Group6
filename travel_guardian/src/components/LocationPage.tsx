@@ -9,6 +9,7 @@ import { Dropdown, DropdownItem, DropdownTrigger, DropdownMenu, Button } from "@
 
 export default function LocationPage({ location }: { location: FullLocation }) {
   const [filter, setFilter] = useState("");
+  const [filteredGuidelines, setFilteredGuidelines] = useState<guideline[]>([]);
   const [selectedKeys, setSelectedKeys] = useState(new Set(["SEARCH BY TAG"]));
   const selectedValue = useMemo(
     () => Array.from(selectedKeys).join(", ").replace(/_/g, ""),
@@ -55,7 +56,8 @@ export default function LocationPage({ location }: { location: FullLocation }) {
   function filterItems() { // by location TAG
     console.log(selectedKeys); 
     if (selectedValue == 'none') {
-      console.log('none was selected');      // reset guidelines to all shown??
+      console.log('none was selected'); 
+      setFilteredGuidelines([]); // RESET
       return; 
     }
     
@@ -84,7 +86,7 @@ export default function LocationPage({ location }: { location: FullLocation }) {
       }
     }
     console.log(allEntries);
-    return allEntries; // may need debugging 
+    setFilteredGuidelines(allEntries);
   }
 
   useEffect(() => {
@@ -198,20 +200,34 @@ export default function LocationPage({ location }: { location: FullLocation }) {
         </div>
 
         <div className="flex flex-col gap-4">
-          {guidelines.map((g) => (
-            <div
-              key={g.id}
-              className="bg-slate-900 rounded-lg p-4 shadow-md mb-4"
-            >
-              <div className="flex flex-row gap-2">
-                <h4 className="text-xl">{g.title}</h4>
-                <p className="text-gray-400">{g.created.toString()}</p>
-                <p className="text-gray-400">{g.tags}</p>
+        {selectedValue === 'none'
+          ? guidelines.map((g) => (
+              <div
+                key={g.id}
+                className="bg-slate-900 rounded-lg p-4 shadow-md mb-4"
+              >
+                <div className="flex flex-row gap-2">
+                  <h4 className="text-xl">{g.title}</h4>
+                  <p className="text-gray-400">{g.created.toString()}</p>
+                  <p className="text-gray-400">{g.tags}</p>
+                </div>
+                <p className="text-gray-400">{g.note}</p>
               </div>
-              <p className="text-gray-400">{g.note}</p>
-            </div>
-          ))}
-        </div>
+            ))
+          : filteredGuidelines.map((g) => (
+              <div
+                key={g.id}
+                className="bg-slate-900 rounded-lg p-4 shadow-md mb-4"
+              >
+                <div className="flex flex-row gap-2">
+                  <h4 className="text-xl">{g.title}</h4>
+                  <p className="text-gray-400">{g.created.toString()}</p>
+                  <p className="text-gray-400">{g.tags}</p>
+                </div>
+                <p className="text-gray-400">{g.note}</p>
+              </div>
+            ))}
+      </div>
 
         <Reports locationId={location.id} />
         <Discussion locationId={location.id} />
