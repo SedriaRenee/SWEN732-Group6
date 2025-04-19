@@ -19,8 +19,8 @@ describe('User model', () => {
       testUser.email,
       testUser.username,
       testUser.password,
-      testUser.first_name,
-      testUser.last_name
+      testUser.firstName,
+      testUser.lastName
     )
 
     expect(prisma.user.create).toHaveBeenCalledOnce()
@@ -29,8 +29,8 @@ describe('User model', () => {
         email: testUser.email,
         username: testUser.username,
         password: testUser.password,
-        first_name: testUser.first_name,
-        last_name: testUser.last_name,
+        first_name: testUser.firstName,
+        last_name: testUser.lastName,
       },
     })
     expect(result).toEqual(testUser)
