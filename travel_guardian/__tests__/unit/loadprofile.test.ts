@@ -13,7 +13,7 @@ describe.skip('GET /api/profile/[username]', () => {
       url: '/api/profile/',
     });
 
-    const response = await GET(req as any);
+    const response = await GET(req as any, {params: {username: ''}});
     const data = await response.json();
 
     expect(response.status).toBe(400);
@@ -31,7 +31,7 @@ describe.skip('GET /api/profile/[username]', () => {
     // Patch req.nextUrl for NextRequest
     req.nextUrl = new URL('http://localhost/api/profile/testuser') as any;
 
-    const response = await GET(req as any);
+    const response = await GET(req as any, {params: {username: ''}});
     const data = await response.json();
 
     expect(response.status).toBe(404);
@@ -62,7 +62,7 @@ describe.skip('GET /api/profile/[username]', () => {
 
     req.nextUrl = new URL('http://localhost/api/profile/testuser') as any;
 
-    const response = await GET(req as any);
+    const response = await GET(req as any, {params: {username: testUser.username}});
     const data = await response.json();
 
     expect(response.status).toBe(200);
