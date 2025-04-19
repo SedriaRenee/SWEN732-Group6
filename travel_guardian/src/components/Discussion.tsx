@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getAllDiscussions } from "@/model/discussions";
-import { discussions } from '@prisma/client';
+import { discussion } from '@prisma/client';
 import CreateDiscus from "@/components/CreateDiscus";
 import {Modal,Button,ModalContent} from "@heroui/react";
 import Link from "next/link";
+import { getSession } from '@/lib/session';
 
 type Props = {
     locationId: number;
@@ -11,9 +12,20 @@ type Props = {
 
 export default function Discussion(props: Props) {
     const [createModal, setCreateModal] = useState(false);
-    const [discussionsList, setDiscussionsList] = useState<discussions[]>([]);
-    const storedValue = localStorage.getItem("userID");
-    const userID = storedValue ? parseInt(storedValue) : 0;
+    const [discussionsList, setDiscussionsList] = useState<discussion[]>([]);
+    
+    const [session, setSession] = useState<any>(null);
+    
+      useEffect(() => {
+        async function fetchSession() {
+          const session = await getSession();
+          setSession(session);
+        }
+        fetchSession();
+      }, []);
+
+
+
     function closeModal() {
         setCreateModal(false);
         getAllDiscussions(props.locationId).then(
@@ -31,7 +43,7 @@ export default function Discussion(props: Props) {
         <div>
             <Modal isOpen={createModal} onClose={() => setCreateModal(false)} className="bg-[#111111BB]">
                 <ModalContent className="fixed  bg-[#222222] p-8 rounded-lg shadow-lg" style={{ maxWidth: '600px', margin: 'auto' }}>
-                    <CreateDiscus locationId={props.locationId} close={closeModal} userId={userID} />
+                    {session ? <CreateDiscus locationId={props.locationId} close={closeModal} userId={session.userId} /> : <div/>}
                 </ModalContent>
             </Modal>
             <div className="flex flex-row justify-between items-center my-4">

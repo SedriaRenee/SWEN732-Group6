@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { location, Prisma } from "@prisma/client";
+import { guideline, location, Prisma } from "@prisma/client";
 
 export async function searchLocation(name: string): Promise<LocationResult[]> {
     const res = await prisma.location.findMany({ where: { name: { startsWith: name, mode: "insensitive" } }, include: {parent: true}, take: 10, orderBy: { name: 'asc'} });
@@ -21,7 +21,6 @@ export async function removeLocation(id: number): Promise<location | null> {
 }
 
 export async function getCountries(): Promise<location[]> {
-
     return prisma.location.findMany({ where: { type: "country" } });
 }
 
@@ -45,6 +44,16 @@ export async function createLocation(name: string, parentName: string): Promise<
 
     return prisma.location.create({ data: { name, type: "city", lat: "0", lon: "0", parentId: null } });
 
+}
+
+export async function getGuidelines(locId: number): Promise<guideline[]> {
+    const locationExists = await prisma.location.findFirst({ where: { id: locId }});
+    if (!locationExists) {
+        return [];
+    }
+
+    const guidelines = await prisma.guideline.findMany({ where: { locId }, orderBy: { created: 'desc' }, take: 10 });
+    return guidelines;
 }
 
 // Location model that includes only the immediate parent name, and basic location info. Used for searching
