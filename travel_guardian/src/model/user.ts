@@ -1,6 +1,6 @@
 'use server'
 import { prisma } from "@/lib/db";
-import { visit } from "@prisma/client";
+import { Prisma, visit } from "@prisma/client";
 
 export interface User {
   id?: number;
@@ -117,22 +117,33 @@ export async function doesUserWantToVisit(
 export async function isUserHome(
   userId: number,
   locId: number
-): Promise<visit | null> {
-  const visit = await prisma.visit.findFirst({
+): Promise<boolean> {
+  const user = await prisma.user.findUnique({
     where: {
-      userId: userId,
-      locationId: locId,
-      past: true,
-      longTerm: true
+      id: userId,
     },
   });
-
-  return visit;
+  if (!user) {
+    return false;
+  }
+  console.log(user.hometownId + " == " + locId);
+  return user.hometownId == locId;
 }
 
 export async function toggleUserVisit(userId: number, locId: number): Promise<visit> {
   const visit = await hasUserVisited(userId, locId);
   if (visit) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (user && user.hometownId == locId) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { hometownId: null },
+      });
+    }
     return prisma.visit.delete({
       where: {
         id: visit.id,
@@ -174,21 +185,22 @@ export async function toggleUserWantToVisit(
 export async function toggleUserHome(
   userId: number,
   locId: number
-): Promise<visit> {
+){
   const visit = await isUserHome(userId, locId);
   if (visit) {
-    return prisma.visit.delete({
-      where: {
-        id: visit.id,
-      },
-    });
+    await prisma.user.update({where: {id: userId}, data: {hometownId: null}})
+  } else {
+    await prisma.user.update({where: {id: userId}, data: {hometownId: locId}})
   }
-  return prisma.visit.create({
-    data: {
-      userId: userId,
-      locationId: locId,
-      past: true,
-      longTerm: true,
-    },
-  });
 }
+
+export type UserProfile = Prisma.userGetPayload<{
+    include: {
+        hometown: true;
+        visits: {
+          include: {
+            location: true;
+          };
+        };
+    };
+}>;

@@ -33,6 +33,14 @@ export async function GET(
 
     const user = await prisma.user.findUnique({
       where: { username },
+      include: {
+        hometown: true,
+        visits: {
+          include: {
+            location: true,
+          },
+        },
+      }
     });
 
     if (!user) {

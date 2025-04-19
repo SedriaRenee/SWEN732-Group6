@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Discussion from "@/components/Discussion";
 import { guideline } from "@prisma/client";
-import { doesUserWantToVisit, hasUserVisited, toggleUserHome, toggleUserVisit, toggleUserWantToVisit } from "@/model/user";
+import { doesUserWantToVisit, hasUserVisited, isUserHome, toggleUserHome, toggleUserVisit, toggleUserWantToVisit } from "@/model/user";
 import { getSession } from "@/lib/session";
 
 export default function LocationPage({ location }: { location: FullLocation }) {
@@ -41,11 +41,11 @@ export default function LocationPage({ location }: { location: FullLocation }) {
           location.id
         );
         setVisited(visit != null);
-        const home = await doesUserWantToVisit(
+        const home = await isUserHome(
           Number(session.userId),
           location.id
         );
-        setHometown(home != null);
+        setHometown(home);
       }
     }
     fetchVisited();
@@ -155,7 +155,7 @@ export default function LocationPage({ location }: { location: FullLocation }) {
               onClick={() => markHometown(!hometown)}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
-              Set Hometown
+              {hometown ? "Unset" : "Set"} Hometown
             </button>
           ) : (
             <div />
