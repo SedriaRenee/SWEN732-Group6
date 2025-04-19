@@ -12,6 +12,10 @@ export const config = {
 // Helper: Extract username from the URL
 function getUsernameFromUrl(req: NextRequest): string | null {
   const pathname = req.nextUrl.pathname;
+  if (!pathname) {
+    return null;
+  }
+  console.log('Pathname:', pathname); // Debugging line
   const segments = pathname.split('/');
   return segments[segments.length - 1] || null;
 }
@@ -29,7 +33,7 @@ async function ensureUploadsDirectory() {
 
 export async function GET(req: NextRequest) {
   try {
-    const username = getUsernameFromUrl(req);
+    const username = req.nextUrl.searchParams.get('username') || "";
 
     if (!username) {
       return NextResponse.json({ error: 'Username is required' }, { status: 400 });

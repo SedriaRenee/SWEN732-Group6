@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { loginUser } from "@/lib/auth";
 
 export default function Login() {
   const router = useRouter();
@@ -47,7 +48,10 @@ export default function Login() {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
       <h1 className="text-4xl font-bold mb-8">Travel Guardian</h1>
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
+      >
         <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
 
         {error && <p className="text-red-500 text-center">{error}</p>}
@@ -71,18 +75,27 @@ export default function Login() {
           required
         />
 
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+        >
           Login
         </button>
 
         <div className="mt-4 text-center">
-          <a href="/forgotpassword" className="text-blue-600 text-sm hover:underline">
+          <a
+            href="/forgotpassword"
+            className="text-blue-600 text-sm hover:underline"
+          >
             Forgot password?
           </a>
         </div>
 
         <div className="mt-2 text-center">
-          <a href="/forgotusername" className="text-blue-600 text-sm hover:underline">
+          <a
+            href="/forgotusername"
+            className="text-blue-600 text-sm hover:underline"
+          >
             Forgot username?
           </a>
         </div>

@@ -51,6 +51,8 @@ export const testUser: user = {
   password: "password123",
   first_name: "Test",
   last_name: "User",
+  resetToken: null,
+  resetTokenExpiry: null,
 };
 
 export const testNewUser: user = {
@@ -60,6 +62,8 @@ export const testNewUser: user = {
   password: "wordpass321",
   first_name: "Sample",
   last_name: "User",
+  resetToken: null,
+  resetTokenExpiry: null,
 };
 
 export const testDiscussion: discussions = {

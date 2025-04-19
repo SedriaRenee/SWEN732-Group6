@@ -1,8 +1,7 @@
 import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 import { createUser, findUserByEmail, findUserByUsername } from '../model/user';
-import { prisma } from '@/lib/db'; 
 import type { user as User } from '@prisma/client'; 
+import { createSession } from './session';
 
 async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
@@ -35,7 +34,7 @@ export async function registerUser(
 export async function loginUser(
   identifier: string,
   password: string
-): Promise<{ user: User; token: string }> {
+): Promise<User | {error: string}> {
   const trimmedPassword = password.trim();
   const normalizedIdentifier = identifier.trim(); 
 
@@ -44,7 +43,7 @@ export async function loginUser(
     (await findUserByUsername(normalizedIdentifier));
 
   if (!user) {
-    throw new Error('Invalid email or username');
+    return {error: "User does not exist"};
   }
 
   const safeUser = user as User;
@@ -52,10 +51,12 @@ export async function loginUser(
   const isMatch = await verifyPassword(trimmedPassword, safeUser.password);
 
   if (!isMatch) {
-    throw new Error('Invalid password');
+    return {error: "Invalid credentials"};
   }
 
-  const token = uuidv4();
+  await createSession(safeUser.id, safeUser.username);
+
+  /*const token = uuidv4();
   const SESSION_DURATION_MS = 1000 * 60 * 60 * 24; // 24 hours
 
   await prisma.session.create({
@@ -65,6 +66,7 @@ export async function loginUser(
       expiresAt: new Date(Date.now() + SESSION_DURATION_MS),
     },
   });
+  */
 
-  return { user: safeUser, token };
+  return safeUser;
 }

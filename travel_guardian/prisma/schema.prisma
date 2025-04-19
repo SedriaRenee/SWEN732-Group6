@@ -96,8 +96,3 @@ model session {
 
   @@index([userId])
 }
-
-enum user_type {
-  travler
-  local
-}
