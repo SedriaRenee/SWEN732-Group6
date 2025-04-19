@@ -1,4 +1,6 @@
+'use server'
 import { prisma } from "@/lib/db";
+import { visit } from "@prisma/client";
 
 export interface User {
   id?: number;
@@ -78,5 +80,115 @@ export async function deleteUser(id: number) {
 
   return prisma.user.delete({
     where: { id },
+  });
+}
+
+/** Methods to handle users interaction with location */
+export async function hasUserVisited(
+  userId: number,
+  locId: number
+): Promise<visit | null> {
+  const visit = await prisma.visit.findFirst({
+    where: {
+      userId: userId,
+      locationId: locId,
+      past: true,
+      longTerm: false
+    },
+  });
+
+  return visit;
+}
+
+export async function doesUserWantToVisit(
+  userId: number,
+  locId: number
+): Promise<visit | null> {
+  const visit = await prisma.visit.findFirst({
+    where: {
+      userId: userId,
+      locationId: locId,
+      past: false,
+    },
+  });
+  return visit;
+}
+
+export async function isUserHome(
+  userId: number,
+  locId: number
+): Promise<visit | null> {
+  const visit = await prisma.visit.findFirst({
+    where: {
+      userId: userId,
+      locationId: locId,
+      past: true,
+      longTerm: true
+    },
+  });
+
+  return visit;
+}
+
+export async function toggleUserVisit(userId: number, locId: number): Promise<visit> {
+  const visit = await hasUserVisited(userId, locId);
+  if (visit) {
+    return prisma.visit.delete({
+      where: {
+        id: visit.id,
+      },
+    });
+  }
+  return prisma.visit.create({
+    data: {
+      userId: userId,
+      locationId: locId,
+      past: true,
+      longTerm: false,
+    },
+  });
+}
+
+export async function toggleUserWantToVisit(
+  userId: number,
+  locId: number
+): Promise<visit> {
+  const visit = await doesUserWantToVisit(userId, locId);
+  if (visit) {
+    return prisma.visit.delete({
+      where: {
+        id: visit.id,
+      },
+    });
+  }
+  return prisma.visit.create({
+    data: {
+      userId: userId,
+      locationId: locId,
+      past: false,
+      longTerm: false,
+    },
+  });
+}
+
+export async function toggleUserHome(
+  userId: number,
+  locId: number
+): Promise<visit> {
+  const visit = await isUserHome(userId, locId);
+  if (visit) {
+    return prisma.visit.delete({
+      where: {
+        id: visit.id,
+      },
+    });
+  }
+  return prisma.visit.create({
+    data: {
+      userId: userId,
+      locationId: locId,
+      past: true,
+      longTerm: true,
+    },
   });
 }
