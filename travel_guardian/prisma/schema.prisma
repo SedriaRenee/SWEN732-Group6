@@ -7,20 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model guideline {
+  id      Int      @id @default(autoincrement())
+  locId   Int
+  note    String
+  tags    String[]
+  created DateTime
+  title   String
+  loc     location @relation(fields: [locId], references: [id])
+}
+
 model location {
-  id         Int          @id @default(autoincrement())
-  name       String       @db.VarChar(255)
-  lat        String       @db.VarChar(15)
-  lon        String       @db.VarChar(15)
-  type       String       @db.VarChar(15)
-  parentId   Int?
-  discussion discussion[]
-  guideline  guideline[]
-  parent     location?    @relation("LocationToLocation", fields: [parentId], references: [id])
-  children   location[]   @relation("LocationToLocation")
-  reports    report[]
-  user       user[]
-  visit      visit[]
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(255)
+  lat         String       @db.VarChar(15)
+  lon         String       @db.VarChar(15)
+  type        String       @db.VarChar(15)
+  parentId    Int?
+  discussions discussion[]
+  guidelines  guideline[]
+  parent      location?    @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children    location[]   @relation("LocationHierarchy")
+  reports     report[]
+  hometownOf  user[]       @relation("Hometown")
+  visitors    visit[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
@@ -48,10 +58,22 @@ model user {
   hometownId       Int?
   lastName         String       @default("") @db.VarChar(400)
   profilePic       String?
-  discussion       discussion[]
-  reply            reply[]
-  location         location?    @relation(fields: [hometownId], references: [id])
-  visit            visit[]
+  discussions      discussion[]
+  replies          reply[]
+  hometown         location?    @relation("Hometown", fields: [hometownId], references: [id])
+  visits           visit[]
+}
+
+model discussion {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  creatorId  Int
+  locationId Int
+  content    String   @db.VarChar(400)
+  user       user     @relation(fields: [creatorId], references: [id])
+  location   location @relation(fields: [locationId], references: [id])
+  replies    reply[]
 }
 
 model reply {
@@ -65,28 +87,6 @@ model reply {
   discussions  discussion? @relation(fields: [discussionId], references: [id])
   reply        reply?      @relation("replyToreply", fields: [parentId], references: [id])
   other_reply  reply[]     @relation("replyToreply")
-}
-
-model discussion {
-  id         Int      @id @default(autoincrement())
-  title      String   @db.VarChar(400)
-  created_at DateTime @default(now())
-  creatorId  Int
-  locationId Int
-  content    String   @db.VarChar(400)
-  user       user     @relation(fields: [creatorId], references: [id])
-  location   location @relation(fields: [locationId], references: [id])
-  reply      reply[]
-}
-
-model guideline {
-  id       Int      @id @default(autoincrement())
-  locId    Int
-  note     String
-  tags     String[]
-  created  DateTime
-  title    String
-  location location @relation(fields: [locId], references: [id])
 }
 
 model visit {

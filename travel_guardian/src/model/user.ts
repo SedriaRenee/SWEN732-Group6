@@ -34,8 +34,8 @@ export async function createUser(
       email,
       username,
       password: hashedPassword,
-      first_name: firstName,
-      last_name: lastName,
+      firstName: firstName,
+      lastName: lastName,
     },
   });
 }

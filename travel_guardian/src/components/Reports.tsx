@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { getReports } from '@/model/report';
 import { report } from '@prisma/client';
 
-Modal.setAppElement('#root');
-
 type Props = {
   locationId: number;
 };

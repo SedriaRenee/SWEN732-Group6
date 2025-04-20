@@ -1,12 +1,12 @@
 'use client';
-import {discussions, reply, users} from "@prisma/client";
+import {discussion, reply, user} from "@prisma/client";
 import { useState } from "react";
 import {Card, CardHeader, CardBody, CardFooter, User, Button, Textarea} from "@heroui/react";
 import { updateDiscussion } from "@/model/discussions";
 import {createReply, updateReply} from "@/model/reply";
 
 type HeadProps = {
-    parent: discussions & { creator?: users };
+    parent: discussion & { creator?: user };
     userId: number;
     handleSubmit: Function;
     handleEditSubmit:Function;
@@ -45,7 +45,7 @@ export function DiscussionComponent(props: HeadProps) {
                     <h4 className="text-2xl font-semibold mt-2">{parent.title}</h4>
                 )}
                 {parent?.creator ? (
-                    <User name={parent.creator.username} description={parent.creator.type} className="mt-1" />
+                    <User name={parent.creator.username} description={parent.creator.firstName} className="mt-1" />
                 ) : (
                     <User name="Unknown User" description="N/a" className="mt-1" />
                 )}
@@ -90,7 +90,7 @@ export function DiscussionComponent(props: HeadProps) {
 
 type ReplyComponentProps = {
     discussionId: number;
-    replyData: reply & { other_reply?: reply[]; creator?: users };
+    replyData: reply & { other_reply?: reply[]; creator?: user };
     userId: number;
     handleSubmit: Function;
 };
@@ -135,7 +135,7 @@ export function ReplyComponent(props: ReplyComponentProps) {
             ) : (
                 <div>
                     {replyData?.creator ? (
-                        <User name={replyData.creator.username} description={replyData.creator.type} className="mt-1" />
+                        <User name={replyData.creator.username} description={replyData.creator.firstName} className="mt-1" />
                     ) : (
                         <User name="Unknown User" description="N/a" className="mt-1" />
                     )}
