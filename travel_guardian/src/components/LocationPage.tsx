@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import Discussion from "@/components/Discussion";
 import { guideline } from "@prisma/client";
 import { Dropdown, DropdownItem, DropdownTrigger, DropdownMenu, Button } from "@heroui/react";
+import { doesUserWantToVisit, hasUserVisited, isUserHome, toggleUserHome, toggleUserVisit, toggleUserWantToVisit } from "@/model/user";
+import { getSession } from "@/lib/session";
 
 export default function LocationPage({ location }: { location: FullLocation }) {
   const [filter, setFilter] = useState("");
@@ -20,8 +22,6 @@ export default function LocationPage({ location }: { location: FullLocation }) {
   );
 
   const [guidelines, setGuidelines] = useState<guideline[]>([]);
-
-  // TODO: load if user has visited, wants to visit, or is hometown
   const [visited, setVisited] = useState(false);
   const [wantsToVisit, setWantsToVisit] = useState(false);
   const [hometown, setHometown] = useState(false);
@@ -33,19 +33,54 @@ export default function LocationPage({ location }: { location: FullLocation }) {
       setGuidelines(g);
     }
     fetchGuidelines();
+
+    async function fetchVisited() {
+      const session = await getSession();
+      if (session && session.userId != null) {
+        const want = await doesUserWantToVisit(
+          Number(session.userId),
+          location.id
+        );
+        setWantsToVisit(want != null)
+
+        const visit = await hasUserVisited(
+          Number(session.userId),
+          location.id
+        );
+        setVisited(visit != null);
+        const home = await isUserHome(
+          Number(session.userId),
+          location.id
+        );
+        setHometown(home);
+      }
+    }
+    fetchVisited();
   }, []);
 
-  function markVisited(b: boolean) {
+  async function markVisited(b: boolean) {
     setVisited(b);
-    // TODO: save to db
+
+    const session = await getSession();
+    if (session && session.userId != null) {
+      toggleUserVisit(Number(session.userId), location.id);
+    }
   }
 
-  function markWantsToVisit(b: boolean) {
+  async function markWantsToVisit(b: boolean) {
     setWantsToVisit(b);
+    const session = await getSession();
+    if (session && session.userId != null) {
+      toggleUserWantToVisit(Number(session.userId), location.id);
+    }
   }
 
-  function markHometown(b: boolean) {
+  async function markHometown(b: boolean) {
     setHometown(b);
+    const session = await getSession();
+    if (session && session.userId != null) {
+      toggleUserHome(Number(session.userId), location.id);
+    }
   }
 
   const handleSelectionChange = (keys: any) => {
@@ -192,7 +227,7 @@ export default function LocationPage({ location }: { location: FullLocation }) {
               onClick={() => markHometown(!hometown)}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
-              Set Hometown
+              {hometown ? "Unset" : "Set"} Hometown
             </button>
           ) : (
             <div />

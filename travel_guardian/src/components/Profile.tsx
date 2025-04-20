@@ -3,17 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-
-interface Profile {
-  profilePic: string;
-  username: string;
-  name: string;
-  age: number;
-  hometown: string;
-  placesVisited: string[];
-  placesToVisit: string[];
-  description: string;
-}
+import { UserProfile } from "@/model/user";
+import { VisitLocation } from "@/model/location";
 
 interface ProfileProps {
   username?: string;
@@ -25,8 +16,11 @@ export default function ProfilePage({ username }: ProfileProps) {
 
   const effectiveUsername = username || params?.username;
 
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const [visited, setVisited] = useState<VisitLocation[]>([]);
+  const [wantsToVisit, setWantsToVisit] = useState<VisitLocation[]>([]);
 
   useEffect(() => {
     if (!effectiveUsername) return;
@@ -34,11 +28,20 @@ export default function ProfilePage({ username }: ProfileProps) {
     fetch(`/api/profile/${effectiveUsername}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         setProfile({
           ...data,
-          placesVisited: Array.isArray(data.placesVisited) ? data.placesVisited : [],
-          placesToVisit: Array.isArray(data.placesToVisit) ? data.placesToVisit : [],
         });
+        const visitedLocations = data.visits.filter(
+          (visit: VisitLocation) => visit.past
+        );
+        const wantToVisitLocations = data.visits.filter(
+          (visit: VisitLocation) => !visit.past
+        );
+
+        setVisited(visitedLocations);
+        setWantsToVisit(wantToVisitLocations);
+        console.log(visitedLocations);
       })
       .catch(() => console.error("Error fetching profile"));
   }, [effectiveUsername]);
@@ -70,17 +73,29 @@ export default function ProfilePage({ username }: ProfileProps) {
 
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6 mt-6">
         <h3 className="text-xl font-semibold mb-4">Bio</h3>
-        <p><span className="font-bold">About Me:</span> {profile.description || "N/A"}</p>
-        <p><span className="font-bold">Name:</span> {profile.name || "N/A"}</p>
-        <p><span className="font-bold">Age:</span> {profile.age || "N/A"}</p>
-        <p><span className="font-bold">Hometown:</span> {profile.hometown || "N/A"}</p>
         <p>
-          <span className="font-bold">Places Visited:</span>{" "}
-          {profile.placesVisited.length > 0 ? profile.placesVisited.join(", ") : "None"}
+          <span className="font-bold">About Me:</span>{" "}
+          {profile.description || "N/A"}
         </p>
         <p>
-          <span className="font-bold">Places to Visit:</span>{" "}
-          {profile.placesToVisit.length > 0 ? profile.placesToVisit.join(", ") : "None"}
+          <span className="font-bold">Name:</span> {profile.firstName || "N/A"}
+        </p>
+        <p>
+          <span className="font-bold">Age:</span> {profile.age || 0}
+        </p>
+        <p>
+          <span className="font-bold">Hometown:</span>{" "}
+          {profile.hometown ? profile.hometown.name : "N/A"}
+        </p>
+        <p>
+          <span className="font-bold">Places Visited ({visited.length}): </span>
+          {visited.map((visit) => visit.location.name).join(", ")}
+        </p>
+        <p>
+          <span className="font-bold">
+            Places to Visit ({wantsToVisit.length}):{" "}
+          </span>
+          {wantsToVisit.map((visit) => visit.location.name).join(", ")}
         </p>
       </div>
     </div>

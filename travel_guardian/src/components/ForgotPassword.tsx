@@ -27,13 +27,11 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 flex flex-col items-center justify-center space-y-6">
-      
-      <h1 className="text-4xl font-extrabold text-center">Travel Guardian</h1>
-
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <h1 className="text-4xl text-center text-white mb-3">Travel Guardian</h1>
       
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Forgot Password</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Forgot Password</h2>
 
         {message && <p className="text-green-500 text-center mb-2">{message}</p>}
         {error && <p className="text-red-500 text-center mb-2">{error}</p>}

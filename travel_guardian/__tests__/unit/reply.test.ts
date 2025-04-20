@@ -28,7 +28,7 @@ describe("Reply Service Tests ", () => {
         userId = user.id;
 
 
-        vi.spyOn(prisma.discussions, "create").mockResolvedValue(testDiscussion);
+        vi.spyOn(prisma.discussion, "create").mockResolvedValue(testDiscussion);
         const discussion = await createDiscussion(testDiscussion.title, testDiscussion.content, userId, locationId);
         discussionId = discussion.id;
     });
