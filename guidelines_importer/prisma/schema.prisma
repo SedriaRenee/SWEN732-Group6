@@ -20,13 +20,13 @@ model discussions {
 }
 
 model guideline {
-  id               Int      @id @default(autoincrement())
-  locId            Int
-  note             String
-  tags             String[]
-  public_timestamp DateTime
-  title            String
-  location         location @relation(fields: [locId], references: [id])
+  id       Int      @id @default(autoincrement())
+  locId    Int
+  content  String
+  links    String[]
+  tags     String[]
+  title    String
+  location location @relation(fields: [locId], references: [id])
 }
 
 model location {
