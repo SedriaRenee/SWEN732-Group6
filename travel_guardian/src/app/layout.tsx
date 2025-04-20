@@ -3,6 +3,8 @@ import { usePathname } from 'next/navigation';
 import { Josefin_Sans, Noto_Sans_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import Modal from 'react-modal';
+import { useEffect } from 'react';
 
 const josefinSans = Josefin_Sans({
   variable: '--font-josefin-sans',
@@ -23,6 +25,10 @@ export default function RootLayout({
 
   // Hide navbar on login and signup pages
   const hideNavbar = pathname === "/login" || pathname === "/signup" || pathname === "/forgotpassword" || pathname === "/forgotusername"|| pathname === "/reset-password";
+
+  useEffect(() => {
+    Modal.setAppElement('#root');
+  }, []);
 
   return (
     <html lang="en">

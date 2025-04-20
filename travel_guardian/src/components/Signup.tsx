@@ -10,13 +10,12 @@ export default function Signup() {
   });
 
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false); 
+  const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +25,7 @@ export default function Signup() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData), 
+      body: JSON.stringify(formData),
     });
 
     const data = await response.json();
@@ -37,23 +36,26 @@ export default function Signup() {
       setSuccessMessage("Signup successful! Redirecting...");
       setSuccess(true);
       setTimeout(() => {
-        window.location.href = "/login"; 
-      }, 2000); 
+        window.location.href = "/login";
+      }, 2000);
     }
   };
 
   return (
-    <div className="w-full max-w-md p-8 bg-gray-100 rounded-lg shadow-md">
-        <h1 className="text-3xl font-thin text-center text-black">Travel Guardian</h1>
-        
-        <h2 className="text-xl font-bold mb-4 text-center text-blue-600">Sign Up</h2>      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <h1 className="text-4xl text-center text-white mb-3">Travel Guardian</h1>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col bg-white p-6 rounded-lg shadow-md w-full max-w-md gap-y-4"
+      >
+        <h2 className="text-xl font-bold text-center text-blue-600">Sign Up</h2>
         <input
           type="text"
           name="firstName"
           placeholder="First Name"
           value={formData.firstName}
           onChange={handleChange}
-          className="w-full border-2 border-gray-500 focus:border-orange-500 focus:outline-hidden p-2 border border-gray-300 rounded text-black"
+          className="w-full border border-gray-300 p-2 rounded text-black w-full border-2 focus:border-orange-500 focus:outline-hidden rounded"
         />
         <input
           type="text"
@@ -61,7 +63,7 @@ export default function Signup() {
           placeholder="Last Name"
           value={formData.lastName}
           onChange={handleChange}
-          className="w-full border-2 border-gray-500 focus:border-orange-500 focus:outline-hidden p-2 border border-gray-300 rounded text-black"
+          className="w-full border border-gray-300 p-2 rounded text-black w-full border-2 focus:border-orange-500 focus:outline-hidden rounded"
         />
         <input
           type="email"
@@ -69,7 +71,7 @@ export default function Signup() {
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
-          className="w-full border-2 border-gray-500 focus:border-orange-500 focus:outline-hidden p-2 border border-gray-300 rounded text-black"
+          className="w-full border border-gray-300 p-2 rounded text-black w-full border-2 focus:border-orange-500 focus:outline-hidden rounded"
         />
         <input
           type="text"
@@ -77,7 +79,7 @@ export default function Signup() {
           placeholder="Username"
           value={formData.username}
           onChange={handleChange}
-          className="w-full border-2 border-gray-500 focus:border-orange-500 focus:outline-hidden p-2 border border-gray-300 rounded text-black"
+          className="w-full border border-gray-300 p-2 rounded text-black w-full border-2 focus:border-orange-500 focus:outline-hidden rounded"
         />
         <input
           type="password"
@@ -85,30 +87,31 @@ export default function Signup() {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          className="w-full border-2 border-gray-500 focus:border-orange-500 focus:outline-hidden p-2 border border-gray-300 rounded text-black"
+          className="w-full border border-gray-300 p-2 rounded text-black w-full border-2 focus:border-orange-500 focus:outline-hidden rounded"
         />
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        
+
         <button
           type="submit"
           className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
         >
           Sign Up
         </button>
+        <p className="text-center text-sm text-gray-500">
+          Already have an account?
+          <a href="/login" className="ml-1 text-blue-600 hover:underline">
+            Log in
+          </a>
+        </p>
       </form>
-
-      <p className="text-center text-sm mt-4 text-gray-500">
-        Already have an account?
-        <a href="/login" className="ml-1 text-blue-600 hover:underline">
-          Log in
-        </a>
-      </p>
 
       {success && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg text-center">
-            <p className="text-lg font-semibold text-green-600">{successMessage}</p>
+            <p className="text-lg font-semibold text-green-600">
+              {successMessage}
+            </p>
           </div>
         </div>
       )}

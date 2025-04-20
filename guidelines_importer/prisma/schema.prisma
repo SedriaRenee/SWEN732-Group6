@@ -1,5 +1,7 @@
-generator client {
-  provider = "prisma-client-js"
+generator py {
+  provider                    = "prisma-client-py"
+  recursive_type_depth        = "5"
+  enable_experimental_decimal = "true"
 }
 
 datasource db {
@@ -7,69 +9,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model discussions {
-  id         Int      @id @default(autoincrement())
-  title      String   @db.VarChar(400)
-  created_at DateTime @default(now())
-  creatorId  Int
-  locationId Int
-  content    String   @db.VarChar(400)
-  user       user     @relation(fields: [creatorId], references: [id])
-  location   location @relation(fields: [locationId], references: [id])
-  reply      reply[]
-}
-
 model guideline {
   id       Int      @id @default(autoincrement())
   locId    Int
-  content  String
-  links    String[]
   tags     String[]
+  links    String[]
   title    String
+  content  String   @default("")
   location location @relation(fields: [locId], references: [id])
 }
 
 model location {
-  id             Int           @id @default(autoincrement())
-  name           String        @db.VarChar(255)
-  lat            String        @db.VarChar(15)
-  lon            String        @db.VarChar(15)
-  type           String        @db.VarChar(15)
+  id             Int          @id @default(autoincrement())
+  name           String       @db.VarChar(255)
+  lat            String       @db.VarChar(15)
+  lon            String       @db.VarChar(15)
+  type           String       @db.VarChar(15)
   parentId       Int?
-  alert_status   String
-  discussions    discussions[]
+  alias          String       @default("") @db.VarChar(100)
+  discussion     discussion[]
   guideline      guideline[]
-  location       location?     @relation("locationTolocation", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  other_location location[]    @relation("locationTolocation")
+  location       location?    @relation("locationTolocation", fields: [parentId], references: [id])
+  other_location location[]   @relation("locationTolocation")
   report         report[]
+  user           user[]
+  visit          visit[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
 
-model profile {
-  id            String   @id
-  userId        Int      @unique
-  profilePic    String?
-  name          String?
-  age           Int?
-  hometown      String?
-  placesVisited String[]
-  placesToVisit String[]
-  description   String   @db.VarChar(400)
-  user          user     @relation(fields: [userId], references: [id])
-}
-
 model reply {
-  id           Int          @id @default(autoincrement())
-  content      String       @db.VarChar(400)
-  created_at   DateTime     @default(now())
+  id           Int         @id @default(autoincrement())
+  content      String      @db.VarChar(400)
+  created_at   DateTime    @default(now())
   creatorId    Int
   discussionId Int?
   parentId     Int?
-  user         user         @relation(fields: [creatorId], references: [id])
-  discussions  discussions? @relation(fields: [discussionId], references: [id])
-  reply        reply?       @relation("replyToreply", fields: [parentId], references: [id])
-  other_reply  reply[]      @relation("replyToreply")
+  user         user        @relation(fields: [creatorId], references: [id])
+  discussions  discussion? @relation(fields: [discussionId], references: [id])
+  reply        reply?      @relation("replyToreply", fields: [parentId], references: [id])
+  other_reply  reply[]     @relation("replyToreply")
 }
 
 model report {
@@ -82,34 +61,45 @@ model report {
   location location @relation(fields: [locId], references: [id])
 }
 
-model session {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  token     String   @unique @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  expiresAt DateTime
-  user      user     @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-}
-
 model user {
-  id               Int           @id @default(autoincrement())
-  username         String        @unique @db.VarChar(255)
-  email            String        @unique @db.VarChar(255)
-  password         String        @db.VarChar(255)
-  first_name       String        @db.VarChar(400)
-  last_name        String        @db.VarChar(400)
-  resetToken       String?       @db.VarChar(255)
+  id               Int          @id @default(autoincrement())
+  username         String       @unique @db.VarChar(255)
+  email            String       @unique @db.VarChar(255)
+  password         String       @db.VarChar(255)
+  resetToken       String?      @db.VarChar(255)
   resetTokenExpiry DateTime?
-  discussions      discussions[]
-  profile          profile?
+  age              Int?
+  description      String?      @db.VarChar(400)
+  firstName        String       @default("") @db.VarChar(400)
+  hometownId       Int?
+  lastName         String       @default("") @db.VarChar(400)
+  profilePic       String?
+  discussion       discussion[]
   reply            reply[]
-  session          session[]
+  location         location?    @relation(fields: [hometownId], references: [id])
+  visit            visit[]
 }
 
-enum user_type {
-  travler
-  local
+model discussion {
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(400)
+  created_at DateTime @default(now())
+  creatorId  Int
+  locationId Int
+  content    String   @db.VarChar(400)
+  user       user     @relation(fields: [creatorId], references: [id])
+  location   location @relation(fields: [locationId], references: [id])
+  reply      reply[]
+}
+
+model visit {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  locationId Int
+  past       Boolean
+  longTerm   Boolean
+  location   location @relation(fields: [locationId], references: [id])
+  user       user     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, locationId])
 }

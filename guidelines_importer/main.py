@@ -91,7 +91,6 @@ async def main():
                     "content": guideline_data["content"],
                     "links": guideline_data["links"],
                     "tags":[]
-
                 }
             )
             print("Guideline created successfully")

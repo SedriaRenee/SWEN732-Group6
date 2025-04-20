@@ -1,4 +1,6 @@
+'use server'
 import { prisma } from "@/lib/db";
+import { Prisma, visit } from "@prisma/client";
 
 export interface User {
   id?: number;
@@ -34,8 +36,8 @@ export async function createUser(
       email,
       username,
       password: hashedPassword,
-      first_name: firstName,
-      last_name: lastName,
+      firstName: firstName,
+      lastName: lastName,
     },
   });
 }
@@ -80,3 +82,125 @@ export async function deleteUser(id: number) {
     where: { id },
   });
 }
+
+/** Methods to handle users interaction with location */
+export async function hasUserVisited(
+  userId: number,
+  locId: number
+): Promise<visit | null> {
+  const visit = await prisma.visit.findFirst({
+    where: {
+      userId: userId,
+      locationId: locId,
+      past: true,
+      longTerm: false
+    },
+  });
+
+  return visit;
+}
+
+export async function doesUserWantToVisit(
+  userId: number,
+  locId: number
+): Promise<visit | null> {
+  const visit = await prisma.visit.findFirst({
+    where: {
+      userId: userId,
+      locationId: locId,
+      past: false,
+    },
+  });
+  return visit;
+}
+
+export async function isUserHome(
+  userId: number,
+  locId: number
+): Promise<boolean> {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    return false;
+  }
+  console.log(user.hometownId + " == " + locId);
+  return user.hometownId == locId;
+}
+
+export async function toggleUserVisit(userId: number, locId: number): Promise<visit> {
+  const visit = await hasUserVisited(userId, locId);
+  if (visit) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (user && user.hometownId == locId) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { hometownId: null },
+      });
+    }
+    return prisma.visit.delete({
+      where: {
+        id: visit.id,
+      },
+    });
+  }
+  return prisma.visit.create({
+    data: {
+      userId: userId,
+      locationId: locId,
+      past: true,
+      longTerm: false,
+    },
+  });
+}
+
+export async function toggleUserWantToVisit(
+  userId: number,
+  locId: number
+): Promise<visit> {
+  const visit = await doesUserWantToVisit(userId, locId);
+  if (visit) {
+    return prisma.visit.delete({
+      where: {
+        id: visit.id,
+      },
+    });
+  }
+  return prisma.visit.create({
+    data: {
+      userId: userId,
+      locationId: locId,
+      past: false,
+      longTerm: false,
+    },
+  });
+}
+
+export async function toggleUserHome(
+  userId: number,
+  locId: number
+){
+  const visit = await isUserHome(userId, locId);
+  if (visit) {
+    await prisma.user.update({where: {id: userId}, data: {hometownId: null}})
+  } else {
+    await prisma.user.update({where: {id: userId}, data: {hometownId: locId}})
+  }
+}
+
+export type UserProfile = Prisma.userGetPayload<{
+    include: {
+        hometown: true;
+        visits: {
+          include: {
+            location: true;
+          };
+        };
+    };
+}>;

@@ -23,7 +23,7 @@ export async function GET(
   { params }: { params: { username: string } }
 ) {
   try {
-    const { username } = params;
+    const { username } = await params;
     if (!username) {
       return NextResponse.json(
         { error: "Username is required" },
@@ -33,7 +33,14 @@ export async function GET(
 
     const user = await prisma.user.findUnique({
       where: { username },
-      include: { profile: true },
+      include: {
+        hometown: true,
+        visits: {
+          include: {
+            location: true,
+          },
+        },
+      }
     });
 
     if (!user) {
@@ -106,15 +113,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Update the user profile in the database
-    const updatedProfile = await prisma.profile.update({
-      where: { userId: user.id },
+    const updatedProfile = await prisma.user.update({
+      where: { id: user.id },
       data: {
-        name,
+        firstName: name,
+        lastName: user.lastName,
         age: Number(age),
-        hometown,
+        hometownId: Number(hometown),
         description,
-        placesVisited,
-        placesToVisit,
         profilePic: profilePicUrl || undefined,
       },
     });
