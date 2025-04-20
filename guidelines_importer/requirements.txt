@@ -1,2 +1,4 @@
 prisma
 asyncio
+requests
+datetime

@@ -3,7 +3,6 @@ import { cookies } from 'next/headers'
 import { decrypt } from './lib/session'
 import { homeRoute, loginRoute, publicRoutes } from './constants'
 
-
 /*** Middleware Function
  * 
  * Handles all traffic to Travel Guardian

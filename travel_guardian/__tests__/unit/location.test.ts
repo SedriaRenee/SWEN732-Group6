@@ -4,7 +4,7 @@ import { render, screen,fireEvent, waitFor } from '@testing-library/react'
 import Navbar from '@/components/Navbar';
 import { beforeEach, describe } from 'node:test';
 import { vi } from "vitest";
-import prisma from '@/lib/db';
+import { prisma } from "@/lib/db";
 import { location } from '@prisma/client';
 import { testCity, testCityLocationResult, testNewCity } from '../constants';
 

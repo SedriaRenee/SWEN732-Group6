@@ -1,8 +1,8 @@
 import { test, describe, beforeEach, afterEach, expect, vi } from "vitest";
 import { createDiscussion, getAllDiscussions, getDiscussions, updateDiscussion, deleteDiscussion } from "@/model/discussions";
-import prisma from "@/lib/db";
 import { testCity, testDiscussion, testUser } from "../constants";
 import { createLocation } from "@/model/location";
+import { prisma } from "@/lib/db";
 
 vi.mock("@/lib/db");
 

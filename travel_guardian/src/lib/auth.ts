@@ -1,9 +1,7 @@
-import bcrypt from "bcryptjs";
-import { v4 as uuidv4 } from "uuid";
-import { createUser, findUserByEmail, findUserByUsername } from "../model/user";
-import { PrismaClient, user as User} from "@prisma/client"; // 
-
-const prisma = new PrismaClient(); 
+import bcrypt from 'bcryptjs';
+import { createUser, findUserByEmail, findUserByUsername } from '../model/user';
+import type { user as User } from '@prisma/client'; 
+import { createSession } from './session';
 
 async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
@@ -23,40 +21,52 @@ export async function registerUser(
 ): Promise<User> {
   const trimmedPassword = password.trim();
   const hashedPassword = await hashPassword(trimmedPassword);
-  return createUser(email, username, hashedPassword, firstName, lastName);
+
+  return createUser(
+    email.trim(),
+    username.trim(),
+    hashedPassword,
+    firstName.trim(),
+    lastName.trim()
+  );
 }
 
 export async function loginUser(
   identifier: string,
   password: string
-): Promise<{ user: User; token: string }> {
+): Promise<User | {error: string}> {
   const trimmedPassword = password.trim();
+  const normalizedIdentifier = identifier.trim(); 
 
   const user =
-    (await findUserByEmail(identifier)) ||
-    (await findUserByUsername(identifier));
+    (await findUserByEmail(normalizedIdentifier)) ||
+    (await findUserByUsername(normalizedIdentifier));
 
   if (!user) {
-    throw new Error("Invalid email or username");
+    return {error: "User does not exist"};
   }
 
-  const isMatch = await verifyPassword(trimmedPassword, user.password);
+  const safeUser = user as User;
+
+  const isMatch = await verifyPassword(trimmedPassword, safeUser.password);
 
   if (!isMatch) {
-    throw new Error("Invalid password");
+    return {error: "Invalid credentials"};
   }
 
-  
-  const token = uuidv4();
+  await createSession(safeUser.id, safeUser.username);
+
+  /*const token = uuidv4();
+  const SESSION_DURATION_MS = 1000 * 60 * 60 * 24; // 24 hours
 
   await prisma.session.create({
     data: {
       token,
-      userId: user.id,
-      createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24), // 24 hrs
+      userId: safeUser.id,
+      expiresAt: new Date(Date.now() + SESSION_DURATION_MS),
     },
   });
+  */
 
-  return { user, token };
+  return safeUser;
 }

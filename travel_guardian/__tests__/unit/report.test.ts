@@ -1,7 +1,7 @@
 import {test, assert, vi, describe, beforeEach} from 'vitest';
 import { createReport, getReports } from '@/model/report';
 import { createLocation, searchLocation } from '@/model/location';
-import prisma from '@/lib/db';
+import { prisma } from "@/lib/db";
 import { testCity, testNewReport, testReport } from '../constants';
 
 vi.mock("@/lib/db");

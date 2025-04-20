@@ -7,9 +7,11 @@ export async function POST(req: Request) {
     const { identifier, password } = body;
 
     // loginUser handles authentication + session creation
-    const { user, token } = await loginUser(identifier, password);
-
-    return NextResponse.json({ message: "Login successful", user, token });
+    const res = await loginUser(identifier, password);
+    if ("error" in res) {
+      return NextResponse.json({ error: res.error }, { status: 400 });
+    }
+    return NextResponse.json({ message: "Login successful", user: res });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }

@@ -5,7 +5,7 @@ import {test} from 'vitest';
 import { testCity, testReports } from '../constants';
 import { createLocation } from '@/model/location';
 import { createReport, findByTag } from '@/model/report';
-import prisma from '@/lib/db';
+import { prisma } from "@/lib/db";
 
 vi.mock("@/lib/db");
 

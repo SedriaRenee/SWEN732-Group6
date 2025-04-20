@@ -1,6 +1,6 @@
 import { test, describe, beforeEach, afterEach, expect,vi } from "vitest";
 import { createReply, getReplyHeads, updateReply, deleteReply } from "@/model/reply";
-import prisma from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { createDiscussion } from "@/model/discussions";
 import { testCity, testDiscussion, testReply, testUser } from "../constants";
 import { createLocation } from "@/model/location";

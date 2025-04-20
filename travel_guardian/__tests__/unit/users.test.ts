@@ -1,16 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { prisma } from '@/lib/db'
+import { prisma } from "@/lib/db";
 import { createUser, findUserByEmail, findUserByUsername } from '@/model/user'
 import { testUser } from '../constants'
 
-vi.mock('@/lib/db', () => ({
-  prisma: {
-    user: {
-      create: vi.fn(),
-      findUnique: vi.fn(),
-    },
-  },
-}))
+vi.mock('@/lib/db');
 
 describe('User model', () => {
   beforeEach(() => {
@@ -19,7 +12,8 @@ describe('User model', () => {
   })
 
   it('createUser calls prisma.user.create with correct payload', async () => {
-    ;(prisma.user.create as any).mockResolvedValue(testUser)
+    vi.spyOn(prisma.user, 'findFirst').mockResolvedValue(null);
+    vi.spyOn(prisma.user, 'create').mockResolvedValue(testUser);
 
     const result = await createUser(
       testUser.email,
@@ -43,7 +37,7 @@ describe('User model', () => {
   })
 
   it('findUserByEmail calls prisma.user.findUnique with email filter', async () => {
-    ;(prisma.user.findUnique as any).mockResolvedValue(testUser)
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValue(testUser)
 
     const result = await findUserByEmail(testUser.email)
 
@@ -55,7 +49,7 @@ describe('User model', () => {
   })
 
   it('findUserByUsername calls prisma.user.findUnique with username filter', async () => {
-    ;(prisma.user.findUnique as any).mockResolvedValue(testUser)
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValue(testUser)
 
     const result = await findUserByUsername(testUser.username)
 

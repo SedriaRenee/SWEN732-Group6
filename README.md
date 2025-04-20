@@ -42,6 +42,16 @@ Populates the database with locations with Python and Prisma.
 5. `prisma generate`
 6. `python main.py`
 
-
-
+## Guideline Importer: Python DB Populator
+Populates the database with locations with Python and Prisma.
+Make sure to import locations into the db before running
+#### Setup
+1. `cd guidelines_importer`
+2. `pip3 install -r requirements.txt`
+3`python main.py`
 Generated site favicon with https://favicon.io/favicon-generator/
+
+
+### Badge
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SedriaRenee_SWEN732-Group6&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SedriaRenee_SWEN732-Group6)
+
