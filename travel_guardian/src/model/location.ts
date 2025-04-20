@@ -82,7 +82,6 @@ export async function getGuidelines(locId: number): Promise<guideline[]> {
 
   const guidelines = await prisma.guideline.findMany({
     where: { locId },
-    orderBy: { created: "desc" },
     take: 10,
   });
   return guidelines;

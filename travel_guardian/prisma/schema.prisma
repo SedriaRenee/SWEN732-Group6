@@ -10,10 +10,10 @@ datasource db {
 model guideline {
   id      Int      @id @default(autoincrement())
   locId   Int
-  note    String
   tags    String[]
-  created DateTime
   title   String
+  content String   @default("")
+  links   String[]
   loc     location @relation(fields: [locId], references: [id])
 }
 
@@ -24,6 +24,7 @@ model location {
   lon         String       @db.VarChar(15)
   type        String       @db.VarChar(15)
   parentId    Int?
+  alias       String       @default("") @db.VarChar(100)
   discussions discussion[]
   guidelines  guideline[]
   parent      location?    @relation("LocationHierarchy", fields: [parentId], references: [id])
@@ -99,19 +100,4 @@ model visit {
   user       user     @relation(fields: [userId], references: [id])
 
   @@unique([userId, locationId])
-}
-
-model user {
-  id               Int           @id @default(autoincrement())
-  username         String        @unique @db.VarChar(255)
-  email            String        @unique @db.VarChar(255)
-  password         String        @db.VarChar(255)
-  first_name       String        @db.VarChar(400)
-  last_name        String        @db.VarChar(400)
-  resetToken       String?       @db.VarChar(255)
-  resetTokenExpiry DateTime?
-  discussions      discussions[]
-  profile          profile?
-  reply            reply[]
-  session          session[]
 }

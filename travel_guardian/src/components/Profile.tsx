@@ -78,10 +78,10 @@ export default function ProfilePage({ username }: ProfileProps) {
           {profile.description || "N/A"}
         </p>
         <p>
-          <span className="font-bold">Name:</span> {profile.firstName || "N/A"}
+          <span className="font-bold">Name:</span> {profile.firstName ?? "N/A"}
         </p>
         <p>
-          <span className="font-bold">Age:</span> {profile.age || 0}
+          <span className="font-bold">Age:</span> {profile.age ?? "N/A"}
         </p>
         <p>
           <span className="font-bold">Hometown:</span>{" "}

@@ -1,8 +1,6 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/lib/auth";
 
 export default function Login() {
   const router = useRouter();
