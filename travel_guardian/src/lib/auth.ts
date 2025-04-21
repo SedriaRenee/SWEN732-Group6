@@ -39,7 +39,7 @@ export async function loginUser(
   const normalizedIdentifier = identifier.trim(); 
 
   const user =
-    (await findUserByEmail(normalizedIdentifier)) ||
+    (await findUserByEmail(normalizedIdentifier)) ??
     (await findUserByUsername(normalizedIdentifier));
 
   if (!user) {
@@ -55,18 +55,5 @@ export async function loginUser(
   }
 
   await createSession(safeUser.id, safeUser.username);
-
-  /*const token = uuidv4();
-  const SESSION_DURATION_MS = 1000 * 60 * 60 * 24; // 24 hours
-
-  await prisma.session.create({
-    data: {
-      token,
-      userId: safeUser.id,
-      expiresAt: new Date(Date.now() + SESSION_DURATION_MS),
-    },
-  });
-  */
-
   return safeUser;
 }

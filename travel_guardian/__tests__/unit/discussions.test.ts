@@ -25,16 +25,16 @@ describe("Discussion Service Tests ", () => {
     });
 
     test("Create a new discussion", async () => {
-        vi.spyOn(prisma.discussions, "create").mockResolvedValue(testDiscussion);
+        vi.spyOn(prisma.discussion, "create").mockResolvedValue(testDiscussion);
         const discussion = await createDiscussion(testDiscussion.title, testDiscussion.content, userId, locationId);
         expect(discussion.id).toBeDefined();
         expect(discussion.title).toBe(testDiscussion.title);
     });
 
     test("Get discussions by location", async () => {
-        vi.spyOn(prisma.discussions, "create").mockResolvedValue(testDiscussion);
+        vi.spyOn(prisma.discussion, "create").mockResolvedValue(testDiscussion);
         const discussion = await createDiscussion(testDiscussion.title, testDiscussion.content, userId, locationId);
-        vi.spyOn(prisma.discussions, "findMany").mockResolvedValue([discussion]);
+        vi.spyOn(prisma.discussion, "findMany").mockResolvedValue([discussion]);
         const discussions = await getAllDiscussions(locationId);
 
         expect(discussions.length).toBeGreaterThan(0);
@@ -42,15 +42,15 @@ describe("Discussion Service Tests ", () => {
     });
 
     test("Get a single discussion by ID (should return null for non-existent ID)", async () => {
-        vi.spyOn(prisma.discussions, "findUnique").mockResolvedValue(null);
-        const fetchedDiscussion = await prisma.discussions.findUnique({where: {id: 1}});
+        vi.spyOn(prisma.discussion, "findUnique").mockResolvedValue(null);
+        const fetchedDiscussion = await prisma.discussion.findUnique({where: {id: 1}});
         expect(fetchedDiscussion).toBeNull();
     });
 
     test("Get a single discussion by ID (should return the correct discussion)", async () => {
-        vi.spyOn(prisma.discussions, "create").mockResolvedValue(testDiscussion);
+        vi.spyOn(prisma.discussion, "create").mockResolvedValue(testDiscussion);
         const discussion = await createDiscussion(testDiscussion.title, testDiscussion.content, userId, locationId);
-        vi.spyOn(prisma.discussions, "findUnique").mockResolvedValue(discussion);
+        vi.spyOn(prisma.discussion, "findUnique").mockResolvedValue(discussion);
         const fetchedDiscussion = await getDiscussions(discussion.id);
 
         expect(fetchedDiscussion).not.toBeNull();
@@ -58,21 +58,21 @@ describe("Discussion Service Tests ", () => {
     });
 
     test("Update a discussion", async () => {
-        vi.spyOn(prisma.discussions, "create").mockResolvedValue(testDiscussion);
+        vi.spyOn(prisma.discussion, "create").mockResolvedValue(testDiscussion);
         const discussion = await createDiscussion("Old Title", "Old Content", userId, locationId);
-        vi.spyOn(prisma.discussions, "update").mockResolvedValue({ ...discussion, title: "New Title" });
+        vi.spyOn(prisma.discussion, "update").mockResolvedValue({ ...discussion, title: "New Title" });
         const updatedDiscussion = await updateDiscussion(discussion.id, "New Title", "New Content");
 
         expect(updatedDiscussion.title).toBe("New Title");
     });
 
     test("Delete a discussion", async () => {
-        vi.spyOn(prisma.discussions, "create").mockResolvedValue(testDiscussion);
+        vi.spyOn(prisma.discussion, "create").mockResolvedValue(testDiscussion);
         const discussion = await createDiscussion("To be deleted", "Some content", userId, locationId);
-        vi.spyOn(prisma.discussions, "delete").mockResolvedValue(discussion);
+        vi.spyOn(prisma.discussion, "delete").mockResolvedValue(discussion);
         await deleteDiscussion(discussion.id);
 
-        vi.spyOn(prisma.discussions, "findUnique").mockResolvedValue(null);
+        vi.spyOn(prisma.discussion, "findUnique").mockResolvedValue(null);
         const deletedDiscussion = await getDiscussions(discussion.id);
         expect(deletedDiscussion).toBeNull();
     });

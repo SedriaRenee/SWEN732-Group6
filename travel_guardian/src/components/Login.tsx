@@ -1,8 +1,6 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginUser } from "@/lib/auth";
 
 export default function Login() {
   const router = useRouter();
@@ -46,14 +44,13 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">Travel Guardian</h1>
+    <div className="flex flex-col justify-center items-center min-h-screen">
+      <h1 className="text-4xl text-center text-white mb-3">Travel Guardian</h1>
       <form
         onSubmit={handleLogin}
-        className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
+        className="flex flex-col bg-white p-6 rounded-lg shadow-md w-full max-w-md gap-y-4"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-
+        <h2 className="text-xl font-bold text-center text-blue-600">Login</h2>
         {error && <p className="text-red-500 text-center">{error}</p>}
 
         <input
@@ -62,7 +59,7 @@ export default function Login() {
           placeholder="Email or Username"
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
-          className="w-full border p-2 mb-2 rounded"
+          className="w-full border border-gray-300 p-2 rounded text-black w-full border-2 focus:border-orange-500 focus:outline-hidden rounded"
           required
         />
 
@@ -71,7 +68,7 @@ export default function Login() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full border border-gray-300 p-2 rounded text-black w-full border-2 focus:border-orange-500 focus:outline-hidden rounded"
           required
         />
 
@@ -82,26 +79,23 @@ export default function Login() {
           Login
         </button>
 
-        <div className="mt-4 text-center">
-          <a
-            href="/forgotpassword"
-            className="text-blue-600 text-sm hover:underline"
-          >
-            Forgot password?
-          </a>
-        </div>
-
-        <div className="mt-2 text-center">
+        <div className="text-center">
           <a
             href="/forgotusername"
             className="text-blue-600 text-sm hover:underline"
           >
             Forgot username?
           </a>
+          <a
+            href="/forgotpassword"
+            className="ml-3 text-blue-600 text-sm hover:underline"
+          >
+            Forgot password?
+          </a>
         </div>
 
-        <div className="mt-2 text-center">
-          <p className="text-sm">
+        <div className="text-center">
+          <p className="text-sm text-gray-500">
             Don't have an account?{" "}
             <a href="/signup" className="text-blue-600 hover:underline">
               Sign up

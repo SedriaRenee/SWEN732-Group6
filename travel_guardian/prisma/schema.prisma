@@ -10,10 +10,10 @@ datasource db {
 model guideline {
   id      Int      @id @default(autoincrement())
   locId   Int
-  note    String
   tags    String[]
-  created DateTime
   title   String
+  content String   @default("")
+  links   String[]
   loc     location @relation(fields: [locId], references: [id])
 }
 
@@ -24,6 +24,7 @@ model location {
   lon         String       @db.VarChar(15)
   type        String       @db.VarChar(15)
   parentId    Int?
+  alias       String       @default("") @db.VarChar(100)
   discussions discussion[]
   guidelines  guideline[]
   parent      location?    @relation("LocationHierarchy", fields: [parentId], references: [id])
