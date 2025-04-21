@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import { Settings } from "lucide-react";
 
 interface Profile {
   profilePic: string;
@@ -15,23 +16,16 @@ interface Profile {
   description: string;
 }
 
-interface ProfileProps {
-  username?: string;
-}
-
-export default function ProfilePage({ username }: ProfileProps) {
-  const params = useParams<{ username: string }>();
+export default function ProfilePage() {
+  const { username } = useParams<{ username: string }>();
   const router = useRouter();
 
-  const effectiveUsername = username || params?.username;
-
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!effectiveUsername) return;
+    if (!username) return;
 
-    fetch(`/api/profile/${effectiveUsername}`)
+    fetch(`/api/profile/${username}`)
       .then((res) => res.json())
       .then((data) => {
         setProfile({
@@ -41,16 +35,30 @@ export default function ProfilePage({ username }: ProfileProps) {
         });
       })
       .catch(() => console.error("Error fetching profile"));
-  }, [effectiveUsername]);
+  }, [username]);
 
   const handleEditRedirect = () => {
-    router.push(`/profile/${effectiveUsername}/edit`);
+    router.push(`/profile/${username}/edit`);
+  };
+
+  const handleSettingsRedirect = () => {
+    router.push(`/profile/${username}/settings`);
   };
 
   if (!profile) return <p>Loading...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900">
+    <div className="min-h-screen bg-gray-100 text-gray-900 relative">
+      <div className="absolute top-4 right-4">
+        <button
+          onClick={handleSettingsRedirect}
+          className="text-gray-600 hover:text-blue-500 transition"
+          aria-label="Settings"
+        >
+          <Settings size={24} />
+        </button>
+      </div>
+
       <div className="flex flex-col items-center mt-8">
         <Image
           src={profile.profilePic || "/user.png"}

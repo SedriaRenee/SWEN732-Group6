@@ -1,26 +1,28 @@
-"use client";
 import { deleteSession, getSession } from "@/lib/session";
 import { LocationResult, searchLocation } from "@/model/location";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { JSX, useEffect, useState } from "react";
 
 export default function Navbar() {
+  const pathname = usePathname(); 
   const [name, setName] = useState("");
   const [lastSearch, setLastSearch] = useState("");
   const [locations, setLocations] = useState<LocationResult[]>([]);
   const [noResults, setNoResults] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  
   const [session, setSession] = useState<any>(null);
 
+  // Fetch session once when pathname changes
   useEffect(() => {
-
     async function fetchSession() {
       const session = await getSession();
       setSession(session);
     }
     fetchSession();
+  }, [pathname]); 
 
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!(event.target as Element).closest(".search-results")) {
         setShowResults(false);
@@ -38,11 +40,12 @@ export default function Navbar() {
     const res = await searchLocation(name);
     setLocations(res);
     setShowResults(true);
-    setNoResults(res.length == 0);
+    setNoResults(res.length === 0);
   }
 
   async function logout() {
     await deleteSession();
+    setSession(null); // Clear session after logout
   }
 
   let searchResult: JSX.Element = <div />;
@@ -55,24 +58,22 @@ export default function Navbar() {
         <h5 className="text-bold">
           {locations.length} search results for {lastSearch}:
         </h5>
-        {locations.map((loc) => {
-          return (
-            <div
-              key={loc.id}
-              className="flex flex-col gap-2"
-              data-testid="location"
+        {locations.map((loc) => (
+          <div
+            key={loc.id}
+            className="flex flex-col gap-2"
+            data-testid="location"
+          >
+            <a
+              className="text-blue-300 text-bold py-1"
+              href={`/location/${loc.id}`}
             >
-              <a
-                className="text-blue-300 text-bold py-1"
-                href={`/location/${loc.id}`}
-              >
-                {loc.name}
-                {loc.parentName.length > 0 && `, ${loc.parentName}`} (
-                {loc.type.charAt(0).toUpperCase() + loc.type.slice(1)})
-              </a>
-            </div>
-          );
-        })}
+              {loc.name}
+              {loc.parentName.length > 0 && `, ${loc.parentName}`} (
+              {loc.type.charAt(0).toUpperCase() + loc.type.slice(1)})
+            </a>
+          </div>
+        ))}
       </div>
     );
   } else if (noResults) {
@@ -85,6 +86,7 @@ export default function Navbar() {
       </div>
     );
   }
+
   return (
     <nav className="bg-blue-900 p-4">
       <div className="flex justify-between items-center">
@@ -96,7 +98,6 @@ export default function Navbar() {
             Browse Countries
           </Link>
         </div>
-        <div></div>
 
         <form
           className="flex flex-row gap-4 items-center relative"
@@ -117,9 +118,20 @@ export default function Navbar() {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           />
         </form>
+
         <div className="flex flex-col items-end">
-          <Link href={`/profile/${session ? session.username : ""}`}>Hello, {session ? session.username: ""}</Link>
-          <button onClick={() => logout()}> Sign out </button>
+          {session ? (
+            <button
+              onClick={logout}
+              className="text-white font-bold hover:text-blue-300"
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link href="/login" className="text-white font-bold">
+              Sign in
+            </Link>
+          )}
         </div>
       </div>
     </nav>
