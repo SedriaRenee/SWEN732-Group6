@@ -22,7 +22,7 @@ export default function ProfilePage() {
   const { username } = useParams<{ username: string }>();
   const router = useRouter();
 
-  const effectiveUsername = username || params?.username;
+  const effectiveUsername = username 
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
