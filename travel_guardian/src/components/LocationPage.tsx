@@ -104,21 +104,18 @@ export default function LocationPage({ location }: { location: FullLocation }) {
 
     // HASH MAP to filter tag to tags of entry
     const filterList = new Map([
-      ["none", ""], // redundant case should be cleared
-      ["general", "general"],
-      ["requirements", "Entry requirements"],
-      ["warning", "Warnings"],
-      ["insurance", "insurance"],
+      ["none", [""]], // redundant case should be cleared
+      ["general", ["Entry requirements"]],
+      ["risks", ["Safety and security", "Regional risks"]],
+      ["support",["Getting help", "Warning and Insurance"]],
+      ["health", ["Health"]],
     ]);
 
     for (const entry of IT) {
-      // console.log(entry[1].id);
-      // console.log(entry[1].title);
-      // console.log(entry[1].note);
-      // console.log(entry[1].tags);
-      for (const item of entry[1].tags) {
-        console.log(item);
-        if (filterList.get(selectedValue) == item) {
+      const title = entry[1].title;
+      const tmp = filterList.get(selectedValue) || [];
+      for (const item of tmp) {
+        if (title == item) {
           allEntries.push(entry[1]);
         }
       }
@@ -252,10 +249,10 @@ export default function LocationPage({ location }: { location: FullLocation }) {
             onSelectionChange={handleSelectionChange}
           >
             <DropdownItem key="none">NONE</DropdownItem>
-            <DropdownItem key="general">GENERAL</DropdownItem>
-            <DropdownItem key="requirements">PASSPORT</DropdownItem>
-            <DropdownItem key="warning">WARNING</DropdownItem>
-            <DropdownItem key="insurance">INSURANCE</DropdownItem>
+            <DropdownItem key="general">TRAVEL</DropdownItem>
+            <DropdownItem key="support">SUPPORT</DropdownItem>
+            <DropdownItem key="health">HEALTH</DropdownItem>
+            <DropdownItem key="risks">SAFETY</DropdownItem>
           </DropdownMenu>
         </Dropdown>
         <div className="flex flex-col gap-4">
