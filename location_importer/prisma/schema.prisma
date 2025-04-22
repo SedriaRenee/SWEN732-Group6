@@ -54,10 +54,10 @@ model reply {
 model guideline {
   id       Int      @id @default(autoincrement())
   locId    Int
-  tags     String[]
-  title    String
   content  String   @default("")
   links    String[]
+  tags     String[]
+  title    String
   location location @relation(fields: [locId], references: [id])
 }
 

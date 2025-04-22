@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import React, { JSX, useEffect, useState } from "react";
 
 export default function Navbar() {
-  const pathname = usePathname(); 
+  const pathname = usePathname();
   const [name, setName] = useState("");
   const [lastSearch, setLastSearch] = useState("");
   const [locations, setLocations] = useState<LocationResult[]>([]);
@@ -20,7 +20,7 @@ export default function Navbar() {
       setSession(session);
     }
     fetchSession();
-  }, [pathname]); 
+  }, [pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -96,6 +96,9 @@ export default function Navbar() {
           </Link>
           <Link href="/countries" className="text-blue-300 text-lg font-bold">
             Browse Countries
+          </Link>
+          <Link href="/travel-companion" className="text-blue-300 text-lg font-bold">
+            Browse Travel Companions
           </Link>
         </div>
 
