@@ -53,12 +53,12 @@ export default function Discussion({ params }: { params: Promise<{ id: string }>
     }
 
     const handleReplySubmit = async () => {
-            const updatedReplies = await getReplyHeads(discId!);
-            setReplies(updatedReplies);
+        const updatedReplies = await getReplyHeads(discId!);
+        setReplies(updatedReplies);
     };
     const handleEditSubmit = async () => {
-            const updatedDisc = await getDiscussions(discId!);
-            setDiscussion(updatedDisc);
+        const updatedDisc = await getDiscussions(discId!);
+        setDiscussion(updatedDisc);
     };
 
 
