@@ -123,18 +123,8 @@ export default function Navbar() {
         </form>
 
         <div className="flex flex-col items-end">
-          {session ? (
-            <button
-              onClick={logout}
-              className="text-white font-bold hover:text-blue-300"
-            >
-              Sign out
-            </button>
-          ) : (
-            <Link href="/login" className="text-white font-bold">
-              Sign in
-            </Link>
-          )}
+          <Link href={`/profile/${session ? session.username : ""}`}>Hello, {session ? session.username: ""}</Link>
+          <button onClick={() => logout()}> Sign out </button>
         </div>
       </div>
     </nav>
