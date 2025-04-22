@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Settings } from "lucide-react";
 
+
 interface Profile {
   profilePic: string;
   username: string;

@@ -1,5 +1,9 @@
--- CreateEnum
-CREATE TYPE "user_type" AS ENUM ('travler', 'local');
+-- CreateEnum if it doesn't already exist
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_type') THEN
+        CREATE TYPE "user_type" AS ENUM ('travler', 'local');
+    END IF;
+END $$;
 
 -- CreateTable
 CREATE TABLE "location" (

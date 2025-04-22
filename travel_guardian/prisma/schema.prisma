@@ -60,20 +60,22 @@ model user {
   lastName         String       @default("") @db.VarChar(400)
   profilePic       String?
   discussions      discussion[]
+  messagesSent     message[]
   replies          reply[]
   hometown         location?    @relation("Hometown", fields: [hometownId], references: [id])
   visits           visit[]
 }
 
 model discussion {
-  id         Int      @id @default(autoincrement())
-  title      String   @db.VarChar(400)
-  created_at DateTime @default(now())
+  id         Int       @id @default(autoincrement())
+  title      String    @db.VarChar(400)
+  created_at DateTime  @default(now())
   creatorId  Int
   locationId Int
-  content    String   @db.VarChar(400)
-  user       user     @relation(fields: [creatorId], references: [id])
-  location   location @relation(fields: [locationId], references: [id])
+  content    String    @db.VarChar(400)
+  user       user      @relation(fields: [creatorId], references: [id])
+  location   location  @relation(fields: [locationId], references: [id])
+  messages   message[]
   replies    reply[]
 }
 
@@ -100,4 +102,21 @@ model visit {
   user       user     @relation(fields: [userId], references: [id])
 
   @@unique([userId, locationId])
+}
+
+model message {
+  id           Int         @id @default(autoincrement())
+  senderId     Int
+  content      String      @db.VarChar(1000)
+  timestamp    DateTime    @default(now())
+  discussionId Int?
+  parentId     Int?
+  discussion   discussion? @relation(fields: [discussionId], references: [id])
+  parent       message?    @relation("MessageThread", fields: [parentId], references: [id])
+  replies      message[]   @relation("MessageThread")
+  sender       user        @relation(fields: [senderId], references: [id])
+
+  @@index([senderId])
+  @@index([discussionId])
+  @@index([parentId])
 }
