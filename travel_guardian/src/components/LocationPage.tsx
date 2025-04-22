@@ -90,8 +90,7 @@ export default function LocationPage({ location }: { location: FullLocation }) {
   };
   // Function to retrieve a master list of SPECIFIC guidelines
   function filterItems() {
-    // by location TAG
-    console.log(selectedKeys);
+    // console.log(selectedKeys);
     if (selectedValue == "none") {
       console.log("none was selected");
       setFilteredGuidelines([]); // RESET
@@ -120,7 +119,7 @@ export default function LocationPage({ location }: { location: FullLocation }) {
         }
       }
     }
-    console.log(allEntries);
+    // console.log(allEntries);
     setFilteredGuidelines(allEntries);
   }
 

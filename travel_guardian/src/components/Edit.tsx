@@ -22,10 +22,33 @@ export default function Profile() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+  const [placesVisitedInput, setPlacesVisitedInput] = useState("");
+  const [placesToVisitInput, setPlacesToVisitInput] = useState(""); // to allow space
+
   useEffect(() => {
+    const stored = sessionStorage.getItem(`profile-${username}`);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setProfile(parsed);
+      setPlacesVisitedInput(parsed.placesVisited?.join(", ") ?? "");
+      setPlacesToVisitInput(parsed.placesToVisit?.join(", ") ?? "");
+    }
+  
     fetch(`/api/profile/${username}`)
-      .then((res) => res.json())
-      .then((data) => setProfile(data))
+      .then((res) => res.json())      //.then((data) => setProfile(data)) 
+      // .then((data) => {  // tmp sol. remove later?
+      //   setProfile({
+      //     ...data,
+      //     description: data.description ?? "",
+      //     name: data.name ?? "",
+      //    hometown: data.hometown ?? "",
+      //     age: data.age ?? 0,
+      //    placesVisited: data.placesVisited ?? [],
+      //    placesToVisit: data.placesToVisit ?? [],
+      //   });
+      //   setPlacesVisitedInput((data.placesVisited ?? []).join(", "));
+      //   setPlacesToVisitInput((data.placesToVisit ?? []).join(", "));
+      // })
       .catch(() => console.error("Error fetching profile"));
   }, [username]);
 
@@ -46,6 +69,15 @@ export default function Profile() {
   const handleSave = async () => {
     if (!profile) return;
 
+    const updatedPlacesVisited = placesVisitedInput.split(",").map((s) => s.trim());
+    const updatedPlacesToVisit = placesToVisitInput.split(",").map((s) => s.trim());
+  
+    const updatedProfile = {
+      ...profile,
+      placesVisited: updatedPlacesVisited,
+      placesToVisit: updatedPlacesToVisit,
+    };
+
     const formData = new FormData();
     if (selectedFile) {
       formData.append("profilePic", selectedFile);
@@ -55,9 +87,11 @@ export default function Profile() {
     formData.append("age", profile.age.toString());
     formData.append("hometown", profile.hometown);
     formData.append("description", profile.description);
-    formData.append("placesVisited", (profile.placesVisited ?? []).join(", "));
-    formData.append("placesToVisit", (profile.placesToVisit ?? []).join(", "));
-
+    // formData.append("placesVisited", (profile.placesVisited ?? []).join(", "));
+    // formData.append("placesToVisit", (profile.placesToVisit ?? []).join(", "));
+    formData.append("placesVisited", placesVisitedInput.split(",").map((s) => s.trim()).join(", "));
+    formData.append("placesToVisit", placesToVisitInput.split(",").map((s) => s.trim()).join(", "));
+    
     try {
       await fetch(`/api/profile/update`, {
         method: "POST",
@@ -68,6 +102,8 @@ export default function Profile() {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
+
+    sessionStorage.setItem(`profile-${username}`, JSON.stringify(updatedProfile));
   };
 
   if (!profile) return <p>Loading...</p>;
@@ -145,30 +181,16 @@ export default function Profile() {
 
           <input
             type="text"
-            value={(profile.placesVisited ?? []).join(", ")}
-            onChange={(e) =>
-              setProfile({
-                ...profile,
-                placesVisited: e.target.value
-                  .split(",")
-                  .map((place) => place.trim()),
-              })
-            }
+            value={placesVisitedInput}
+            onChange={(e) => setPlacesVisitedInput(e.target.value)}
             className="w-full mb-4 p-2 border rounded-lg"
             placeholder="Places Visited"
           />
 
           <input
             type="text"
-            value={(profile.placesToVisit ?? []).join(", ")}
-            onChange={(e) =>
-              setProfile({
-                ...profile,
-                placesToVisit: e.target.value
-                  .split(",")
-                  .map((place) => place.trim()),
-              })
-            }
+            value={placesToVisitInput}
+            onChange={(e) => setPlacesToVisitInput(e.target.value)}
             className="w-full mb-4 p-2 border rounded-lg"
             placeholder="Places to Visit"
           />
