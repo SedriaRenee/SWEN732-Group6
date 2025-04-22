@@ -112,7 +112,7 @@ export default class CreatePost extends Component<Props, State> {
         return (
             <div className="flex justify-center items-center">
                 <Form className="flex flex-col space-y-4 p-4" onSubmit={this.handleSubmit}>
-                    <h2 className="text-xl font-bold">Create Companion Post</h2>
+                    <h2 className="text-xl font-bold p-5">Create Companion Post</h2>
                     <Input
                         label="Title"
                         labelPlacement="outside"
@@ -121,7 +121,6 @@ export default class CreatePost extends Component<Props, State> {
                         type="text"
                         required
                         name="title"
-                        className="w-max m-auto h-max px-4 py-2 text-black bg-[#222222] "
                         onChange={(e) => this.setState({ title: e.target.value })}
                         value={title}
                     />
@@ -133,7 +132,6 @@ export default class CreatePost extends Component<Props, State> {
                         id="content"
                         name="content"
                         onChange={(e) => this.setState({ content: e.target.value })}
-                        className="w-max m-auto h-max px-4 py-2 text-black bg-[#222222] "
                         rows={8}
                         value={content}
                     />
