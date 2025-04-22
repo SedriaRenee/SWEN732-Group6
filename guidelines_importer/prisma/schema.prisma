@@ -1,7 +1,5 @@
-generator py {
-  provider                    = "prisma-client-py"
-  recursive_type_depth        = "5"
-  enable_experimental_decimal = "true"
+generator client {
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -10,74 +8,96 @@ datasource db {
 }
 
 model guideline {
-  id       Int      @id @default(autoincrement())
-  locId    Int
-  tags     String[]
-  links    String[]
-  title    String
-  content  String   @default("")
-  location location @relation(fields: [locId], references: [id])
+  id      Int      @id @default(autoincrement())
+  locId   Int
+  tags    String[]
+  title   String
+  content String   @default("")
+  links   String[]
+  loc     location @relation(fields: [locId], references: [id])
 }
 
 model location {
-  id             Int          @id @default(autoincrement())
-  name           String       @db.VarChar(255)
-  lat            String       @db.VarChar(15)
-  lon            String       @db.VarChar(15)
-  type           String       @db.VarChar(15)
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(255)
+  lat            String           @db.VarChar(15)
+  lon            String           @db.VarChar(15)
+  type           String           @db.VarChar(15)
   parentId       Int?
-  alias          String       @default("") @db.VarChar(100)
-  discussion     discussion[]
-  guideline      guideline[]
-  location       location?    @relation("locationTolocation", fields: [parentId], references: [id])
-  other_location location[]   @relation("locationTolocation")
-  report         report[]
-  user           user[]
-  visit          visit[]
+  alias          String           @default("") @db.VarChar(100)
+  discussions    discussion[]
+  guidelines     guideline[]
+  parent         location?        @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children       location[]       @relation("LocationHierarchy")
+  reports        report[]
+  hometownOf     user[]           @relation("Hometown")
+  visitors       visit[]
+  companion_post companion_post[]
 
   @@index([parentId], map: "fki_location_parentId_fkey")
 }
 
-model reply {
-  id           Int         @id @default(autoincrement())
-  content      String      @db.VarChar(400)
-  created_at   DateTime    @default(now())
-  creatorId    Int
-  discussionId Int?
-  parentId     Int?
-  user         user        @relation(fields: [creatorId], references: [id])
-  discussions  discussion? @relation(fields: [discussionId], references: [id])
-  reply        reply?      @relation("replyToreply", fields: [parentId], references: [id])
-  other_reply  reply[]     @relation("replyToreply")
+model companion_post {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  content     String
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  creatorId   Int
+  locationId  Int
+  status      String    @default("ACTIVE") @db.VarChar(20) // ACTIVE, INACTIVE
+  preferences String[]  @default([])
+
+  creator  user                @relation(fields: [creatorId], references: [id])
+  location location            @relation(fields: [locationId], references: [id])
+  comments companion_comment[]
+}
+
+model companion_comment {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.VarChar(400)
+  createdAt DateTime @default(now())
+  creatorId Int
+  postId    Int
+  parentId  Int?
+
+  creator user                @relation(fields: [creatorId], references: [id])
+  post    companion_post      @relation(fields: [postId], references: [id])
+  parent  companion_comment?  @relation("CommentHierarchy", fields: [parentId], references: [id])
+  replies companion_comment[] @relation("CommentHierarchy")
 }
 
 model report {
-  id       Int      @id @default(autoincrement())
-  name     String   @db.VarChar(255)
-  desc     String
-  created  DateTime @default(now())
-  locId    Int
-  tag      String?  @default("NO-RISK") @db.VarChar(20)
-  location location @relation(fields: [locId], references: [id])
+  id      Int      @id @default(autoincrement())
+  name    String   @db.VarChar(255)
+  desc    String
+  created DateTime @default(now())
+  locId   Int
+  tag     String?  @default("NO-RISK") @db.VarChar(20)
+  loc     location @relation(fields: [locId], references: [id])
 }
 
 model user {
-  id               Int          @id @default(autoincrement())
-  username         String       @unique @db.VarChar(255)
-  email            String       @unique @db.VarChar(255)
-  password         String       @db.VarChar(255)
-  resetToken       String?      @db.VarChar(255)
-  resetTokenExpiry DateTime?
-  age              Int?
-  description      String?      @db.VarChar(400)
-  firstName        String       @default("") @db.VarChar(400)
-  hometownId       Int?
-  lastName         String       @default("") @db.VarChar(400)
-  profilePic       String?
-  discussion       discussion[]
-  reply            reply[]
-  location         location?    @relation(fields: [hometownId], references: [id])
-  visit            visit[]
+  id                Int                 @id @default(autoincrement())
+  username          String              @unique @db.VarChar(255)
+  email             String              @unique @db.VarChar(255)
+  password          String              @db.VarChar(255)
+  resetToken        String?             @db.VarChar(255)
+  resetTokenExpiry  DateTime?
+  age               Int?
+  description       String?             @db.VarChar(400)
+  firstName         String              @default("") @db.VarChar(400)
+  hometownId        Int?
+  lastName          String              @default("") @db.VarChar(400)
+  profilePic        String?
+  discussions       discussion[]
+  replies           reply[]
+  hometown          location?           @relation("Hometown", fields: [hometownId], references: [id])
+  visits            visit[]
+  companion_post    companion_post[]
+  companion_comment companion_comment[]
 }
 
 model discussion {
@@ -89,7 +109,20 @@ model discussion {
   content    String   @db.VarChar(400)
   user       user     @relation(fields: [creatorId], references: [id])
   location   location @relation(fields: [locationId], references: [id])
-  reply      reply[]
+  replies    reply[]
+}
+
+model reply {
+  id           Int         @id @default(autoincrement())
+  content      String      @db.VarChar(400)
+  created_at   DateTime    @default(now())
+  creatorId    Int
+  discussionId Int?
+  parentId     Int?
+  users        user        @relation(fields: [creatorId], references: [id])
+  discussions  discussion? @relation(fields: [discussionId], references: [id])
+  reply        reply?      @relation("replyToreply", fields: [parentId], references: [id])
+  other_reply  reply[]     @relation("replyToreply")
 }
 
 model visit {

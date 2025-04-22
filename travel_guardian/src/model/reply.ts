@@ -27,8 +27,8 @@ export async function createReply(creatorId: number, discussionId: number, conte
         data: {
             content:content,
             creatorId: creatorId,
-             discussionId:discussionId,
-             parentId: parentId,
+            discussionId:discussionId,
+            parentId: parentId,
         },
     });
 }

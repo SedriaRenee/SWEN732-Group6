@@ -4,20 +4,22 @@ import { getDiscussions } from "@/model/discussions";
 import { DiscussionComponent, ReplyComponent } from "@/components/DiscussionComponents";
 import { getReplyHeads } from "@/model/reply";
 import { useEffect, useState } from "react";
-import { discussions, reply } from "@prisma/client";
+import { discussion, reply } from "@prisma/client";
 import {Divider} from "@heroui/react";
+import {getSession} from "@/lib/session";
 
 export default function Discussion({ params }: { params: Promise<{ id: string }> }) {
-    const [discussion, setDiscussion] = useState<discussions | null>(null);
+    const [discussion, setDiscussion] = useState<discussion | null>(null);
     const [replies, setReplies] = useState<reply[]>([]);
     const [loading, setLoading] = useState(true);
-    const storedValue = localStorage.getItem("userID");
-    const userId = storedValue ? parseInt(storedValue) : 0; // or another default
+  const [userId,setUser] = useState<number>(null);
     const [discId, setDiscId] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const uId = parseInt(await getSession()?.userId);
+                setUser(uId);
                 const resolvedParams = await params;
                 const id = parseInt(resolvedParams.id);
                 setDiscId(id);

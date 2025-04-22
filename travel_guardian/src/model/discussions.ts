@@ -12,7 +12,7 @@ export async function getAllDiscussions(locationId:number) {
 export async function getDiscussions(discussionId: number):Promise<discussion |null> {
     return prisma.discussion.findUnique(
         {where:{id:discussionId},
-        include:{user:true},
+            include:{user:true},
         }
     );
 }
@@ -31,7 +31,7 @@ export async function createDiscussion(title:string,content:string,creatorId:num
 export async function updateDiscussion(discussionId:number,title:string, content:string){
     return prisma.discussion.update({
         where:{id:discussionId},
-       data:{
+        data:{
             title:title,
             content: content,
         }
@@ -41,6 +41,5 @@ export async function updateDiscussion(discussionId:number,title:string, content
 export async function deleteDiscussion(discussionId:number){
     return prisma.discussion.delete({where:{id:discussionId}});
 }
-
 
 

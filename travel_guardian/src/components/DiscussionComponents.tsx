@@ -78,9 +78,9 @@ export function DiscussionComponent(props: HeadProps) {
                     className="w-full p-2 rounded-md  text-white "
                 />
                 <div className="flex justify-end w-full">
-                <Button onPress={handleReplySubmit} className="bg-blue-500 text-white p-2 rounded-lg ">
-                    Submit Reply
-                </Button>
+                    <Button onPress={handleReplySubmit} className="bg-blue-500 text-white p-2 rounded-lg ">
+                        Submit Reply
+                    </Button>
                 </div>
             </CardFooter>
         </Card>
