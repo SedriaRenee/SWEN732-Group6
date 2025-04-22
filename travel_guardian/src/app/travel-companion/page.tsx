@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllPosts } from "@/model/companion";
-import { companion_post } from "@prisma/client";
+import { CompPostLocation, getAllPosts } from "@/model/companion";
+import { location } from "@prisma/client";
 import { getSession } from "@/lib/session";
 import { Button, Modal, ModalContent } from "@heroui/react";
 import CreatePost from "@/components/CreatePost";
@@ -11,13 +11,13 @@ import { getCountries } from "@/model/location";
 import { PREFERENCE_TAGS } from "@/model/preferences";
 
 export default function TravelCompanions() {
-    const [postList, setPostList] = useState<companion_post[]>([]);
+    const [postList, setPostList] = useState<CompPostLocation[]>([]);
     const [isModOpen, setIsModOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [session, setSession] = useState<any>();
     const [locationFilter, setLocationFilter] = useState("");
     const [tagFilter, setTagFilter] = useState<string[]>([]);
-    const [locations, setLocations] = useState([]);
+    const [locations, setLocations] = useState<location[]>([]);
     const [showTagDropdown, setShowTagDropdown] = useState(false);
 
     useEffect(() => {

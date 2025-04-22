@@ -175,7 +175,7 @@ export default function Profile() {
 
           <input
             type="number"
-            value={Number(profile.age) ?? 0}
+            value={Number(profile.age)}
             onChange={(e) =>
               setProfile({ ...profile, age: Number(e.target.value) })
             }

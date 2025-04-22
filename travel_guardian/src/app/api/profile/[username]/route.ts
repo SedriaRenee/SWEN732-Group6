@@ -68,10 +68,10 @@ export async function POST(req: NextRequest) {
       console.log(`${key}: ${value}`);
     });
 
-    const username = formData.get("username")?.toString() || "";
-    const name = formData.get("name")?.toString() || "";
-    const age = formData.get("age")?.toString() || "";
-    const description = formData.get("description")?.toString() || "";
+    const username = formData.get("username")?.toString() ?? "";
+    const name = formData.get("name")?.toString() ?? "";
+    const age = formData.get("age")?.toString() ?? "";
+    const description = formData.get("description")?.toString() ?? "";
     const profilePic = formData.get("profilePic") as Blob;
 
     if (
