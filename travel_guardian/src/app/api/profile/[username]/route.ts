@@ -71,24 +71,14 @@ export async function POST(req: NextRequest) {
     const username = formData.get("username")?.toString() || "";
     const name = formData.get("name")?.toString() || "";
     const age = formData.get("age")?.toString() || "";
-    const hometown = formData.get("hometown")?.toString() || "";
     const description = formData.get("description")?.toString() || "";
-    const placesVisited = (formData.get("placesVisited")?.toString() || "")
-      .split(",")
-      .map((place) => place.trim());
-    const placesToVisit = (formData.get("placesToVisit")?.toString() || "")
-      .split(",")
-      .map((place) => place.trim());
     const profilePic = formData.get("profilePic") as Blob;
 
     if (
-      !username ||
+      !username/* ||
       !name ||
       !age ||
-      !hometown ||
-      !description ||
-      !placesVisited.length ||
-      !placesToVisit.length
+      !description   // any or all parameters may be defined */
     ) {
       throw new TypeError("One or more required fields are missing or invalid");
     }
@@ -119,7 +109,6 @@ export async function POST(req: NextRequest) {
         firstName: name,
         lastName: user.lastName,
         age: Number(age),
-        hometownId: Number(hometown),
         description,
         profilePic: profilePicUrl || undefined,
       },

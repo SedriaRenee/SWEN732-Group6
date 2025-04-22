@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
+import { UserProfile } from "@/model/user";
+import { VisitLocation } from "@/model/location";
 
 interface Profile {
   profilePic: string;
@@ -17,25 +19,39 @@ interface Profile {
 
 export default function Profile() {
   const { username } = useParams();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<UserProfile>({} as UserProfile);
   const [isEditing, setIsEditing] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const [placesVisitedInput, setPlacesVisitedInput] = useState("");
-  const [placesToVisitInput, setPlacesToVisitInput] = useState(""); // to allow space
+  const [visited, setVisited] = useState<VisitLocation[]>([]);
+  const [wantsToVisit, setWantsToVisit] = useState<VisitLocation[]>([]);
 
   useEffect(() => {
     const stored = sessionStorage.getItem(`profile-${username}`);
     if (stored) {
       const parsed = JSON.parse(stored);
       setProfile(parsed);
-      setPlacesVisitedInput(parsed.placesVisited?.join(", ") ?? "");
-      setPlacesToVisitInput(parsed.placesToVisit?.join(", ") ?? "");
     }
-  
+
     fetch(`/api/profile/${username}`)
-      .then((res) => res.json())      //.then((data) => setProfile(data)) 
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.age == null) {
+          data.age = 0;
+        }
+        setProfile(data);
+        const visitedLocations = data.visits.filter(
+          (visit: VisitLocation) => visit.past
+        );
+        const wantToVisitLocations = data.visits.filter(
+          (visit: VisitLocation) => !visit.past
+        );
+
+        setVisited(visitedLocations);
+        setWantsToVisit(wantToVisitLocations);
+      })
       // .then((data) => {  // tmp sol. remove later?
       //   setProfile({
       //     ...data,
@@ -69,13 +85,8 @@ export default function Profile() {
   const handleSave = async () => {
     if (!profile) return;
 
-    const updatedPlacesVisited = placesVisitedInput.split(",").map((s) => s.trim());
-    const updatedPlacesToVisit = placesToVisitInput.split(",").map((s) => s.trim());
-  
     const updatedProfile = {
       ...profile,
-      placesVisited: updatedPlacesVisited,
-      placesToVisit: updatedPlacesToVisit,
     };
 
     const formData = new FormData();
@@ -83,27 +94,28 @@ export default function Profile() {
       formData.append("profilePic", selectedFile);
     }
     formData.append("username", profile.username);
-    formData.append("name", profile.name);
-    formData.append("age", profile.age.toString());
-    formData.append("hometown", profile.hometown);
-    formData.append("description", profile.description);
+    formData.append("name", profile.firstName);
+    formData.append("age", profile.age ? profile.age.toString() : "");
+    //formData.append("hometown", profile.hometown?.name!!);
+    formData.append("description", profile.description ?? "");
     // formData.append("placesVisited", (profile.placesVisited ?? []).join(", "));
     // formData.append("placesToVisit", (profile.placesToVisit ?? []).join(", "));
-    formData.append("placesVisited", placesVisitedInput.split(",").map((s) => s.trim()).join(", "));
-    formData.append("placesToVisit", placesToVisitInput.split(",").map((s) => s.trim()).join(", "));
-    
+
     try {
       await fetch(`/api/profile/update`, {
         method: "POST",
         body: formData,
       });
       setIsEditing(false);
-      window.location.reload(); 
+      window.location.reload();
     } catch (error) {
       console.error("Error updating profile:", error);
     }
 
-    sessionStorage.setItem(`profile-${username}`, JSON.stringify(updatedProfile));
+    sessionStorage.setItem(
+      `profile-${username}`,
+      JSON.stringify(updatedProfile)
+    );
   };
 
   if (!profile) return <p>Loading...</p>;
@@ -143,7 +155,7 @@ export default function Profile() {
 
           <input
             type="text"
-            value={profile.description}
+            value={profile.description ?? ""}
             onChange={(e) =>
               setProfile({ ...profile, description: e.target.value })
             }
@@ -153,15 +165,17 @@ export default function Profile() {
 
           <input
             type="text"
-            value={profile.name}
-            onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+            value={profile.firstName ?? ""}
+            onChange={(e) =>
+              setProfile({ ...profile, firstName: e.target.value })
+            }
             className="w-full mb-4 p-2 border rounded-lg"
             placeholder="Name"
           />
 
           <input
             type="number"
-            value={profile.age}
+            value={Number(profile.age) ?? 0}
             onChange={(e) =>
               setProfile({ ...profile, age: Number(e.target.value) })
             }
@@ -171,26 +185,24 @@ export default function Profile() {
 
           <input
             type="text"
-            value={profile.hometown}
-            onChange={(e) =>
-              setProfile({ ...profile, hometown: e.target.value })
-            }
+            value={profile.hometown ? profile.hometown?.name!! : ""}
+            readOnly={true}
             className="w-full mb-4 p-2 border rounded-lg"
             placeholder="Hometown"
           />
 
           <input
             type="text"
-            value={placesVisitedInput}
-            onChange={(e) => setPlacesVisitedInput(e.target.value)}
+            value={visited.length}
+            readOnly={true}
             className="w-full mb-4 p-2 border rounded-lg"
             placeholder="Places Visited"
           />
 
           <input
             type="text"
-            value={placesToVisitInput}
-            onChange={(e) => setPlacesToVisitInput(e.target.value)}
+            value={wantsToVisit.length}
+            readOnly={true}
             className="w-full mb-4 p-2 border rounded-lg"
             placeholder="Places to Visit"
           />
@@ -203,22 +215,26 @@ export default function Profile() {
             {profile.description || "N/A"}
           </p>
           <p>
-            <span className="font-bold">Name:</span> {profile.name || "N/A"}
+            <span className="font-bold">Name:</span> {profile.firstName || "N/A"}
           </p>
           <p>
-            <span className="font-bold">Age:</span> {profile.age || "N/A"}
+            <span className="font-bold">Age:</span> {profile.age == 0 ? "N/A" : profile.age}
           </p>
           <p>
             <span className="font-bold">Hometown:</span>{" "}
-            {profile.hometown || "N/A"}
+            {profile.hometown?.name!! || "N/A"}
           </p>
           <p>
-            <span className="font-bold">Places Visited:</span>{" "}
-            {(profile.placesVisited ?? []).join(", ") || "None"}
+            <span className="font-bold">
+              Places Visited ({visited.length}):{" "}
+            </span>
+            {visited.map((visit) => visit.location.name).join(", ")}
           </p>
           <p>
-            <span className="font-bold">Places to Visit:</span>{" "}
-            {(profile.placesToVisit ?? []).join(", ") || "None"}
+            <span className="font-bold">
+              Places to Visit ({wantsToVisit.length}):{" "}
+            </span>
+            {wantsToVisit.map((visit) => visit.location.name).join(", ")}
           </p>
         </div>
       )}
