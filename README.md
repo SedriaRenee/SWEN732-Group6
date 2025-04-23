@@ -4,6 +4,8 @@
 Contains the frontend and backend for the Travel Guardian web app,
 with styling through Tailwind and database through Prisma.
 
+👉 [About This Project](about.md)
+
 Folder Layout:
 - `/app` - Pages (views)
 - `/components` - Reusable view elements
