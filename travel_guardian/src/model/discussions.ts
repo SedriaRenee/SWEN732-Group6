@@ -12,7 +12,7 @@ export async function getAllDiscussions(locationId:number) {
 export async function getDiscussions(discussionId: number):Promise<discussion |null> {
     return prisma.discussion.findUnique(
         {where:{id:discussionId},
-        include:{users:true},
+        include:{user:true},
         }
     );
 }

@@ -6,7 +6,7 @@ import React, { JSX, useEffect, useState } from "react";
 import { MessageCircle, User, LocateIcon } from "lucide-react"; 
 
 export default function Navbar() {
-  const pathname = usePathname(); 
+  const pathname = usePathname();
   const [name, setName] = useState("");
   const [lastSearch, setLastSearch] = useState("");
   const [locations, setLocations] = useState<LocationResult[]>([]);
@@ -21,7 +21,7 @@ export default function Navbar() {
       setSession(session);
     }
     fetchSession();
-  }, [pathname]); 
+  }, [pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

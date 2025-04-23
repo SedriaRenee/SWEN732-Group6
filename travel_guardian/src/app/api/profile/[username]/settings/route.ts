@@ -25,8 +25,8 @@ export async function PUT(req: NextRequest, context: { params: { username: strin
     await prisma.user.update({
       where: { username },
       data: {
-        username: newUsername || undefined,
-        email: email || undefined,
+        username: newUsername ?? undefined,
+        email: email ?? undefined,
       },
     });
   }
