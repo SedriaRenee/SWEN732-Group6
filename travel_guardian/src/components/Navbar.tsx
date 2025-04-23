@@ -3,6 +3,7 @@ import { LocationResult, searchLocation } from "@/model/location";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { JSX, useEffect, useState } from "react";
+import { MessageCircle, User, LocateIcon } from "lucide-react"; 
 
 export default function Navbar() {
   const pathname = usePathname(); 
@@ -97,6 +98,14 @@ export default function Navbar() {
           <Link href="/countries" className="text-blue-300 text-lg font-bold">
             Browse Countries
           </Link>
+          <Link href="/travel-companion" className="text-blue-300 text-lg font-bold">
+            Browse Travel Companions
+          </Link>
+          {/* New "Send Location" link */}
+          <Link href="/send-location" className="flex items-center gap-2 text-blue-300 text-lg font-bold">
+            <LocateIcon size={20} />  {/* Add the Location icon here */}
+          Send Location
+          </Link>
         </div>
 
         <form
@@ -120,18 +129,8 @@ export default function Navbar() {
         </form>
 
         <div className="flex flex-col items-end">
-          {session ? (
-            <button
-              onClick={logout}
-              className="text-white font-bold hover:text-blue-300"
-            >
-              Sign out
-            </button>
-          ) : (
-            <Link href="/login" className="text-white font-bold">
-              Sign in
-            </Link>
-          )}
+          <Link href={`/profile/${session ? session.username : ""}`}>Hello, {session ? session.username: ""}</Link>
+          <button onClick={() => logout()}> Sign out </button>
         </div>
       </div>
     </nav>
