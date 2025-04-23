@@ -1,4 +1,4 @@
-// src/app/api/send-location/mailer.ts
+
 import nodemailer from "nodemailer";
 
 if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {

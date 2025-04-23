@@ -1,4 +1,4 @@
-// src/app/api/send-location/route.ts
+
 import { NextResponse } from "next/server";
 import { transporter } from "./mailer";
 import twilio from "twilio";
@@ -8,7 +8,6 @@ const accountSid = process.env.TWILIO_SID!;
 const authToken  = process.env.TWILIO_TOKEN!;
 const fromNumber = process.env.TWILIO_PHONE!;
 
-// sanity check
 if (!accountSid || !authToken || !fromNumber) {
   throw new Error("Twilio credentials are missing in env");
 }
